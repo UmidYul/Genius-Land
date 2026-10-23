@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><title>Line Map sketch</title>
+<style>
+*{box-sizing:border-box;margin:0}
+body{width:1440px;height:900px;overflow:hidden;background:#F5F6F3;color:#0E2A52;font-family:"Arial Narrow",Arial,sans-serif}
+nav{height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 56px;border-bottom:3px solid #0E2A52}
+.logo{font-weight:800;font-size:24px;letter-spacing:.02em}
+.links{display:flex;gap:32px;font-size:15px}
+.login{background:#0E2A52;color:#fff;padding:8px 16px;font-size:14px;font-weight:700}
+.plate{position:absolute;left:56px;top:112px;background:#0E2A52;color:#fff;padding:32px 40px;width:640px}
+.plate small{display:block;font-size:15px;letter-spacing:.12em;text-transform:uppercase;opacity:.8;margin-bottom:12px}
+.plate h1{font-size:64px;line-height:1;font-weight:800}
+.plate p{font-size:19px;margin-top:16px;opacity:.9}
+svg{position:absolute;left:0;top:64px}
+.ticket{position:absolute;left:56px;bottom:56px;width:560px;background:#fff;border:3px solid #0E2A52;padding:20px 24px;display:grid;grid-template-columns:1fr 1fr 110px;gap:12px;align-items:end}
+.ticket h3{grid-column:1/-1;font-size:22px}
+.f{border-bottom:2px solid #0E2A52;height:40px;font-size:15px;padding-top:16px;color:#6b7686}
+.go{background:#D6262E;color:#fff;height:48px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:16px}
+.st{font-weight:800;font-size:28px}
+</style></head><body>
+<nav><span class="logo">GENIUS LAND</span><span class="links"><span>Направления</span><span>День в школе</span><span>Результаты</span><span>Платформа</span><span>Контакты</span></span><span class="login">Войти</span></nav>
+<svg width="1440" height="836" viewBox="0 0 1440 836">
+  <g fill="none" stroke-width="14" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M60 470 H760" stroke="#0E2A52"/>
+    <path d="M760 470 L880 350 H1300" stroke="#D6262E"/>
+    <path d="M760 470 H1300" stroke="#1E5BB8"/>
+    <path d="M760 470 L880 590 H1300" stroke="#1B9A4A"/>
+  </g>
+  <g fill="#fff" stroke="#0E2A52" stroke-width="5">
+    <circle cx="780" cy="470" r="22" stroke-width="7"/>
+    <circle cx="1300" cy="350" r="20" stroke="#D6262E" stroke-width="7"/>
+    <circle cx="1300" cy="470" r="20" stroke="#1E5BB8" stroke-width="7"/>
+    <circle cx="1300" cy="590" r="20" stroke="#1B9A4A" stroke-width="7"/>
+  </g>
+  <g fill="#0E2A52"><circle cx="740" cy="470" r="9"/><circle cx="700" cy="470" r="9"/></g>
+  <g font-family="Arial Narrow,Arial" font-weight="800" font-size="30">
+    <text x="1336" y="360" fill="#D6262E">Медицина</text>
+    <text x="1336" y="480" fill="#1E5BB8">Филология</text>
+    <text x="1336" y="600" fill="#1B9A4A">Экономика</text>
+  </g>
+  <g font-family="Arial" font-size="17" fill="#0E2A52">
+    <text x="930" y="330">биология · химия</text>
+    <text x="930" y="450">русский · литература · английский</text>
+    <text x="930" y="570">математика · экономика</text>
+    <text x="1180" y="790" font-size="15">→ поступление в вуз</text>
+  </g>
+</svg>
+<div class="plate"><small>Частная школа · Маргилан · 1–11 классы</small><h1>Русская школа с тремя направлениями</h1><p>Медицина, филология, экономика: путь к вузу с первого класса.</p></div>
+<div class="ticket"><h3>Записаться на экскурсию</h3><span class="f">Имя родителя</span><span class="f">Телефон</span><span class="go">Отправить</span></div>
+</body></html>
