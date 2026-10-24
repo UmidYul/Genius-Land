@@ -4,7 +4,7 @@ import { Button, Dialog, Input } from '@gl/ui';
 import { Pencil, Plus } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useActionState, useEffect, useState } from 'react';
-import { FormAlert, SubmitButton } from '@/components/form';
+import { FormAlert, SubmitButton, Form } from '@/components/form';
 import { createBranchAction, updateBranchAction } from './actions';
 
 interface BranchValues {
@@ -20,7 +20,10 @@ export function BranchFormDialog({ branch }: { branch?: BranchValues }) {
   const t = useTranslations('admin.branches');
   const tCommon = useTranslations('common');
   const [open, setOpen] = useState(false);
-  const [state, action] = useActionState(branch ? updateBranchAction : createBranchAction, {});
+  const [state, action, actionPending] = useActionState(
+    branch ? updateBranchAction : createBranchAction,
+    {},
+  );
 
   useEffect(() => {
     if (state.ok) setOpen(false);
@@ -48,7 +51,7 @@ export function BranchFormDialog({ branch }: { branch?: BranchValues }) {
         title={branch ? t('editTitle') : t('createTitle')}
         closeLabel={tCommon('close')}
       >
-        <form action={action} className="flex flex-col gap-4">
+        <Form action={action} pending={actionPending} className="flex flex-col gap-4">
           <FormAlert tone="error">{state.fields ? null : state.error}</FormAlert>
           {branch ? (
             <input type="hidden" name="id" value={branch.id} />
@@ -92,7 +95,7 @@ export function BranchFormDialog({ branch }: { branch?: BranchValues }) {
             </Button>
             <SubmitButton>{tCommon('save')}</SubmitButton>
           </div>
-        </form>
+        </Form>
       </Dialog>
     </>
   );

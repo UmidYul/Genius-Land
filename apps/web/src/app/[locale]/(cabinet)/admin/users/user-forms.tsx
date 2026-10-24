@@ -4,7 +4,7 @@ import { Button, Card, CardHeader, CardTitle, Input, Select } from '@gl/ui';
 import { Copy } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useActionState, useState } from 'react';
-import { FormAlert, SubmitButton } from '@/components/form';
+import { FormAlert, SubmitButton, Form } from '@/components/form';
 import { Link } from '@/i18n/navigation';
 import type { FormState } from '@/lib/action-result';
 import {
@@ -108,7 +108,7 @@ export function CreateUserForm({
   branches: { id: string; name: string }[];
 }) {
   const t = useTranslations('admin.users');
-  const [state, action] = useActionState(createUserAction, {});
+  const [state, action, actionPending] = useActionState(createUserAction, {});
 
   if (state.ok && state.id) {
     return (
@@ -125,7 +125,11 @@ export function CreateUserForm({
   }
 
   return (
-    <form action={action} className="grid grid-cols-1 gap-4 lg:grid-cols-2 [&>*]:min-w-0">
+    <Form
+      action={action}
+      pending={actionPending}
+      className="grid grid-cols-1 gap-4 lg:grid-cols-2 [&>*]:min-w-0"
+    >
       <Card className="flex flex-col gap-4">
         <FormAlert tone="error">{state.fields ? null : state.error}</FormAlert>
         <ProfileFields state={state} />
@@ -134,26 +138,26 @@ export function CreateUserForm({
         <AssignmentsEditor roles={roles} branches={branches} initial={[]} />
         <SubmitButton className="self-start">{t('create')}</SubmitButton>
       </Card>
-    </form>
+    </Form>
   );
 }
 
 export function EditProfileForm({ id, values }: { id: string; values: ProfileValues }) {
   const t = useTranslations('admin.users');
   const tCommon = useTranslations('common');
-  const [state, action] = useActionState(updateUserAction, {});
+  const [state, action, actionPending] = useActionState(updateUserAction, {});
   return (
     <Card>
       <CardHeader>
         <CardTitle>{t('profile')}</CardTitle>
       </CardHeader>
-      <form action={action} className="flex flex-col gap-4">
+      <Form action={action} pending={actionPending} className="flex flex-col gap-4">
         <FormAlert tone="error">{state.fields ? null : state.error}</FormAlert>
         <FormAlert tone="success">{state.ok ? state.message : null}</FormAlert>
         <input type="hidden" name="id" value={id} />
         <ProfileFields values={values} state={state} />
         <SubmitButton className="self-start">{tCommon('save')}</SubmitButton>
-      </form>
+      </Form>
     </Card>
   );
 }
@@ -171,17 +175,17 @@ export function EditAssignmentsForm({
 }) {
   const t = useTranslations('admin.users');
   const tCommon = useTranslations('common');
-  const [state, action] = useActionState(setAssignmentsAction, {});
+  const [state, action, actionPending] = useActionState(setAssignmentsAction, {});
   return (
     <Card>
-      <form action={action} className="flex flex-col gap-4">
+      <Form action={action} pending={actionPending} className="flex flex-col gap-4">
         <FormAlert tone="error">{state.error}</FormAlert>
         <FormAlert tone="success">{state.ok ? state.message : null}</FormAlert>
         <input type="hidden" name="id" value={id} />
         <AssignmentsEditor roles={roles} branches={branches} initial={initial} />
         <Input id="assign-reason" name="reason" label={t('reason')} hint={t('optional')} />
         <SubmitButton className="self-start">{tCommon('save')}</SubmitButton>
-      </form>
+      </Form>
     </Card>
   );
 }
@@ -198,15 +202,15 @@ export function UserCommands({
   isSelf: boolean;
 }) {
   const t = useTranslations('admin.users');
-  const [state, action] = useActionState(userCommandAction, {});
+  const [state, action, actionPending] = useActionState(userCommandAction, {});
   const command = (name: string, label: string, variant: 'secondary' | 'danger' = 'secondary') => (
-    <form action={action}>
+    <Form action={action} pending={actionPending}>
       <input type="hidden" name="id" value={id} />
       <input type="hidden" name="command" value={name} />
       <SubmitButton variant={variant} size="sm" className="w-full sm:w-auto">
         {label}
       </SubmitButton>
-    </form>
+    </Form>
   );
   return (
     <Card className="flex flex-col gap-4">

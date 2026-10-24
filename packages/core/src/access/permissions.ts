@@ -17,6 +17,8 @@ export const permissionCodes = [
   'people.student.manage',
   'people.guardian.view',
   'people.guardian.manage',
+  'people.staff.view',
+  'people.staff.manage',
 
   // School structure
   'school.academicYear.view',

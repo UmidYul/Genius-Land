@@ -45,7 +45,10 @@ function grantCondition(actor: Actor, grant: Grant, fields: ScopeFields): Where 
     case 'BRANCH':
       return branch;
     case 'ASSIGNED': {
-      const classIds = [...new Set(relations.teaching.map((p) => p.classId))];
+      // Class-level lists: taught classes and the homeroom class (see can.ts).
+      const classIds = [
+        ...new Set([...relations.teaching.map((p) => p.classId), ...relations.homeroomClassIds]),
+      ];
       if (!fields.class || classIds.length === 0) return null;
       return { ...branch, [fields.class]: { in: classIds } };
     }

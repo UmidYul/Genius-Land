@@ -3,7 +3,7 @@
 import { Button, Card, Input } from '@gl/ui';
 import { useTranslations } from 'next-intl';
 import { useActionState, useState, useTransition } from 'react';
-import { FormAlert, SubmitButton } from '@/components/form';
+import { FormAlert, SubmitButton, Form } from '@/components/form';
 import { Link } from '@/i18n/navigation';
 import type { FormState } from '@/lib/action-result';
 import type { Challenge } from '@/lib/challenge';
@@ -13,7 +13,7 @@ import { resendCodeAction, verifyLoginAction } from './actions';
 export function CodeForm({ sentTo }: { sentTo: Challenge['sentTo'] }) {
   const t = useTranslations('auth');
   const tChannel = useTranslations('channels');
-  const [state, action] = useActionState(verifyLoginAction, {});
+  const [state, action, actionPending] = useActionState(verifyLoginAction, {});
   const [resendState, setResendState] = useState<FormState>({});
   const [resending, startResend] = useTransition();
 
@@ -34,10 +34,11 @@ export function CodeForm({ sentTo }: { sentTo: Challenge['sentTo'] }) {
       </div>
       <FormAlert tone="error">{shownState.error}</FormAlert>
       <FormAlert tone="success">{shownState.message}</FormAlert>
-      <form
-        action={(form) => {
+      <Form
+        pending={actionPending}
+        action={(data) => {
           setResendState({});
-          action(form);
+          action(data);
         }}
         className="flex flex-col gap-4"
       >
@@ -55,7 +56,7 @@ export function CodeForm({ sentTo }: { sentTo: Challenge['sentTo'] }) {
           autoFocus
         />
         <SubmitButton className="w-full">{t('confirm')}</SubmitButton>
-      </form>
+      </Form>
       <div className="flex flex-wrap items-center justify-between gap-2">
         <Link
           href="/login"

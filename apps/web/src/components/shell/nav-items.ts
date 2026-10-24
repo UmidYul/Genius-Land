@@ -1,6 +1,14 @@
 import type { PermissionCode } from '@gl/core/permissions';
 import {
+  BookOpen,
   Building2,
+  CalendarDays,
+  CalendarRange,
+  FileUp,
+  GraduationCap,
+  HeartHandshake,
+  IdCard,
+  School,
   ClipboardCheck,
   House,
   KeyRound,
@@ -19,9 +27,17 @@ export type NavLabelKey =
   | 'adminRoles'
   | 'adminSettings'
   | 'adminAudit'
-  | 'designSystem';
+  | 'designSystem'
+  | 'schoolYears'
+  | 'schoolCalendar'
+  | 'schoolClasses'
+  | 'schoolCatalog'
+  | 'peopleStudents'
+  | 'peopleGuardians'
+  | 'peopleStaff'
+  | 'peopleImport';
 
-export type NavSection = 'main' | 'admin' | 'dev';
+export type NavSection = 'main' | 'school' | 'people' | 'admin' | 'dev';
 
 export interface NavItem {
   href: string;
@@ -47,6 +63,62 @@ export const navItems: NavItem[] = [
     icon: ClipboardCheck,
     section: 'main',
     permission: 'approvals.request.view',
+  },
+  {
+    href: '/school/classes',
+    labelKey: 'schoolClasses',
+    icon: School,
+    section: 'school',
+    permission: 'school.class.view',
+  },
+  {
+    href: '/school/years',
+    labelKey: 'schoolYears',
+    icon: CalendarRange,
+    section: 'school',
+    permission: 'school.academicYear.view',
+  },
+  {
+    href: '/school/calendar',
+    labelKey: 'schoolCalendar',
+    icon: CalendarDays,
+    section: 'school',
+    permission: 'school.academicYear.view',
+  },
+  {
+    href: '/school/catalog',
+    labelKey: 'schoolCatalog',
+    icon: BookOpen,
+    section: 'school',
+    permission: 'school.subject.view',
+  },
+  {
+    href: '/people/students',
+    labelKey: 'peopleStudents',
+    icon: GraduationCap,
+    section: 'people',
+    permission: 'people.student.view',
+  },
+  {
+    href: '/people/guardians',
+    labelKey: 'peopleGuardians',
+    icon: HeartHandshake,
+    section: 'people',
+    permission: 'people.guardian.view',
+  },
+  {
+    href: '/people/staff',
+    labelKey: 'peopleStaff',
+    icon: IdCard,
+    section: 'people',
+    permission: 'people.staff.view',
+  },
+  {
+    href: '/people/import',
+    labelKey: 'peopleImport',
+    icon: FileUp,
+    section: 'people',
+    permission: 'people.student.manage',
   },
   {
     href: '/admin/users',

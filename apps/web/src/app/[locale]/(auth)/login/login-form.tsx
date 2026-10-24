@@ -3,13 +3,13 @@
 import { Card, Input } from '@gl/ui';
 import { useTranslations } from 'next-intl';
 import { useActionState } from 'react';
-import { FormAlert, SubmitButton } from '@/components/form';
+import { FormAlert, SubmitButton, Form } from '@/components/form';
 import { Link } from '@/i18n/navigation';
 import { loginAction } from '../actions';
 
 export function LoginForm({ passwordWasReset }: { passwordWasReset: boolean }) {
   const t = useTranslations('auth');
-  const [state, action] = useActionState(loginAction, {});
+  const [state, action, actionPending] = useActionState(loginAction, {});
 
   return (
     <Card className="flex w-full flex-col gap-5 p-6">
@@ -21,7 +21,7 @@ export function LoginForm({ passwordWasReset }: { passwordWasReset: boolean }) {
         <FormAlert tone="success">{t('passwordResetDone')}</FormAlert>
       )}
       <FormAlert tone="error">{state.error}</FormAlert>
-      <form action={action} className="flex flex-col gap-4">
+      <Form action={action} pending={actionPending} className="flex flex-col gap-4">
         <Input
           id="phone"
           name="phone"
@@ -42,7 +42,7 @@ export function LoginForm({ passwordWasReset }: { passwordWasReset: boolean }) {
           required
         />
         <SubmitButton className="w-full">{t('signIn')}</SubmitButton>
-      </form>
+      </Form>
       <Link
         href="/forgot-password"
         className="text-primary-soft-fg self-center rounded-lg px-2 py-1 text-sm font-semibold hover:underline"

@@ -5,7 +5,7 @@ import { useTranslations } from 'next-intl';
 import { Link, usePathname } from '@/i18n/navigation';
 import { isActive, navItems, type NavSection } from './nav-items';
 
-const sectionOrder: NavSection[] = ['main', 'admin', 'dev'];
+const sectionOrder: NavSection[] = ['main', 'school', 'people', 'admin', 'dev'];
 
 export function NavList({
   allowed,

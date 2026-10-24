@@ -6,6 +6,13 @@ import type { PrismaClient } from '@gl/db';
  */
 export const branchOwnedModels: Readonly<Record<string, string>> = {
   ApprovalRequest: 'branchId',
+  AcademicYear: 'branchId',
+  CalendarDay: 'branchId',
+  Class: 'branchId',
+  Staff: 'branchId',
+  Student: 'branchId',
+  TeachingAssignment: 'branchId',
+  ImportJob: 'branchId',
 };
 
 /** Operations that read or change many rows — they must carry a branch condition. */

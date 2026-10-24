@@ -4,13 +4,21 @@
  * (or with SEED_DEMO=1), all marked "(демо)" and with phones that cannot belong to anyone.
  */
 import { PrismaClient } from '@gl/db';
-import { DEMO_PASSWORD, demoUsers, seedBranchesAndAccess, seedDemoUsers } from './seed';
+import { seedDemoSchool } from './demo-school';
+import {
+  DEMO_PASSWORD,
+  demoUsers,
+  seedBranchesAndAccess,
+  seedCatalog,
+  seedDemoUsers,
+} from './seed';
 
 const prisma = new PrismaClient();
 
 async function main() {
   await seedBranchesAndAccess(prisma);
-  console.log('seed: permissions, roles, branches — ok');
+  await seedCatalog(prisma);
+  console.log('seed: permissions, roles, branches, directions — ok');
 
   const withDemo = process.env.NODE_ENV !== 'production' || process.env.SEED_DEMO === '1';
   if (withDemo) {
@@ -19,6 +27,8 @@ async function main() {
     for (const user of demoUsers.filter((u) => u.staff)) {
       console.log(`  ${user.phone}  ${user.fullName}`);
     }
+    if (await seedDemoSchool(prisma))
+      console.log('seed: demo school (year, classes, students) — ok');
   }
 }
 

@@ -22,7 +22,8 @@
     "pageOf": "{page}-sahifa / {pages}",
     "currency": {
       "sum": "soʻm"
-    }
+    },
+    "exportExcel": "Excelga yuklash"
   },
   "nav": {
     "mainMenu": "Asosiy menyu",
@@ -39,8 +40,18 @@
     "section": {
       "main": "Asosiy",
       "admin": "Boshqaruv",
-      "dev": "Ishlab chiqish"
-    }
+      "dev": "Ishlab chiqish",
+      "school": "Oʻquv jarayoni",
+      "people": "Odamlar"
+    },
+    "schoolClasses": "Sinflar va guruhlar",
+    "schoolYears": "Oʻquv yili",
+    "schoolCalendar": "Kalendar",
+    "schoolCatalog": "Fanlar va yoʻnalishlar",
+    "peopleStudents": "Oʻquvchilar",
+    "peopleGuardians": "Ota-onalar",
+    "peopleStaff": "Xodimlar",
+    "peopleImport": "Excel importi"
   },
   "topbar": {
     "language": "Til",
@@ -132,7 +143,8 @@
       "user": "foydalanuvchi",
       "role": "rol",
       "setting": "sozlama",
-      "audit": "amallar jurnali"
+      "audit": "amallar jurnali",
+      "staff": "xodim"
     },
     "actions": {
       "view": "koʻrish",
@@ -458,6 +470,452 @@
     "APPROVAL_NO_POLICY": "Bunday turdagi ariza uchun tasdiqlash qoidasi yoʻq.",
     "APPROVAL_NOT_PENDING": "Ariza allaqachon koʻrib chiqilgan.",
     "APPROVAL_OWN_REQUEST": "Oʻz arizangizni tasdiqlab boʻlmaydi.",
-    "APPROVAL_COMMENT_REQUIRED": "Rad etish sababini koʻrsating."
+    "APPROVAL_COMMENT_REQUIRED": "Rad etish sababini koʻrsating.",
+    "BRANCH_REQUIRED": "Yuqoridagi almashtirgichda filialni tanlang.",
+    "YEAR_NOT_FOUND": "Filialda joriy oʻquv yili yoʻq. Avval uni yarating.",
+    "YEAR_NAME_TAKEN": "Bunday nomli oʻquv yili bor.",
+    "YEAR_TERMS_INVALID": "{term}-chorak sanalari notoʻgʻri: boshlanishi tugashidan oldin va oldingi chorakdan keyin boʻlishi kerak.",
+    "CALENDAR_DAY_TAKEN": "Bu sana uchun yozuv allaqachon bor.",
+    "SUBJECT_NAME_TAKEN": "Bunday fan bor.",
+    "DIRECTION_NAME_TAKEN": "Bunday yoʻnalish bor.",
+    "DIRECTION_NOT_FOUND": "Yoʻnalish topilmadi.",
+    "CLASS_NAME_TAKEN": "Bu oʻquv yilida shunday nomli sinf bor.",
+    "CLASS_GRADE_REQUIRED": "Sinf raqamini tanlang (1–7).",
+    "CLASS_DIRECTION_REQUIRED": "Guruh uchun yoʻnalishni tanlang.",
+    "CLASS_CAPACITY_BELOW_OCCUPANCY": "Sigʻim hozirgi oʻquvchilar sonidan ({occupied}) kam boʻlishi mumkin emas.",
+    "CLASS_HAS_STUDENTS": "Sinfda {count} ta oʻquvchi bor — avval ularni oʻtkazing.",
+    "CLASS_ARCHIVED": "Sinf arxivda.",
+    "CLASS_NOT_FOUND": "Joriy yilda bunday sinf topilmadi.",
+    "CLASS_FULL": "Sinf toʻla (sigʻimi {capacity}).",
+    "CLASS_GRADE_MISMATCH": "Oʻquvchining sinf raqami sinfnikiga mos kelishi kerak ({grade}).",
+    "GROUP_GRADE_INVALID": "Guruhlarda faqat 8–11-sinf oʻquvchilari.",
+    "ASSIGNMENT_EXISTS": "Bu oʻqituvchi bu fanga allaqachon biriktirilgan.",
+    "STAFF_PHONE_TAKEN": "Bu filialda shu telefonli xodim bor.",
+    "STAFF_NOT_FOUND": "Shu telefonli xodim topilmadi.",
+    "STAFF_IS_HOMEROOM": "Xodim sinf rahbari: {classes}. Avval sinf rahbarini almashtiring.",
+    "BIRTHDATE_INVALID": "Tugʻilgan sana notoʻgʻri.",
+    "STUDENT_POSSIBLE_DUPLICATE": "Ehtimol, takror: shu ism va tugʻilgan sanali oʻquvchi bor ({numbers}).",
+    "STUDENT_POSSIBLE_DUPLICATE_OTHER_BRANCH": "Ehtimol, takror: boshqa filialda shu ism va tugʻilgan sanali oʻquvchi bor.",
+    "STUDENT_NOT_FOUND": "Oʻquvchi topilmadi.",
+    "STUDENT_NOT_ACTIVE": "Oʻquvchi hozir oʻqimaydi.",
+    "REASON_REQUIRED": "Sababni koʻrsating.",
+    "GUARDIAN_ALREADY_LINKED": "Bu odam allaqachon shu oʻquvchiga bogʻlangan.",
+    "IMPORT_FILE_INVALID": "Faylni oʻqib boʻlmadi. .xlsx formatidagi shablondan foydalaning.",
+    "IMPORT_MISSING_COLUMNS": "Majburiy ustunlar yoʻq: {columns}.",
+    "IMPORT_EMPTY": "Faylda maʼlumotli qatorlar yoʻq.",
+    "IMPORT_TOO_LARGE": "Fayl juda katta (koʻpi bilan {max} qator, 5 MB).",
+    "IMPORT_REQUIRED": "majburiy maydon.",
+    "IMPORT_VALUE_UNKNOWN": "qiymat tanilmadi.",
+    "IMPORT_NUMBER_INVALID": "son notoʻgʻri.",
+    "IMPORT_DUPLICATE_IN_FILE": "faylda takrorlanadi.",
+    "IMPORT_POSSIBLE_DUPLICATE": "ehtimol, takror (shu ism va tugʻilgan sana) — qoʻlda qoʻshing.",
+    "IMPORT_ALREADY_DONE": "Bu import allaqachon bajarilgan."
+  },
+  "school": {
+    "years": {
+      "title": "Oʻquv yili",
+      "subtitle": "Har bir yil toʻrtta chorak bilan. Filialda joriy yil bitta.",
+      "create": "Oʻquv yili qoʻshish",
+      "createTitle": "Yangi oʻquv yili",
+      "createText": "Choraklar sanalarini kiriting — keyin ularni tahrirlash mumkin.",
+      "name": "Nomi",
+      "namePlaceholder": "Masalan: 2026–2027",
+      "term": "{n}-chorak",
+      "from": "Boshlanishi",
+      "to": "Tugashi",
+      "makeCurrent": "Joriy yil qilish",
+      "makeCurrentButton": "Joriy qilish",
+      "editTerms": "Choraklarni tahrirlash",
+      "current": "Joriy",
+      "classesCount": "Sinflar: {count}",
+      "empty": "Oʻquv yili hali yoʻq",
+      "emptyText": "Sinflar joriy oʻquv yiliga biriktiriladi — avval yilni yarating."
+    },
+    "calendar": {
+      "title": "Ish kalendari",
+      "subtitleYear": "{year} oʻquv yili: bayramlar va koʻchirilgan kunlar",
+      "subtitleNoYear": "Bayramlar va koʻchirilgan kunlar",
+      "weekRule": "Oddiy hafta: 1–7-sinflar — dushanba–juma; 8–11 guruhlar — dushanba–shanba (shanba tushgacha). Choraklardan tashqari kunlar — taʼtil.",
+      "add": "Kun qoʻshish",
+      "addTitle": "Bayram yoki koʻchirilgan kun",
+      "addText": "Bayram — oddiy ish kunida dam olish. Ish kuni — dam olish kunida dars (koʻchirish).",
+      "date": "Sana",
+      "kind": "Turi",
+      "kinds": {
+        "HOLIDAY": "Bayram / dam olish",
+        "WORKDAY": "Ish kuni (koʻchirish)"
+      },
+      "appliesTo": "Kimlar uchun",
+      "allClasses": "Barcha sinflar",
+      "classTypes": {
+        "REGULAR": "1–7-sinflar",
+        "DIRECTION_GROUP": "8–11 guruhlar"
+      },
+      "branch": "Filial",
+      "bothBranches": "Ikkala filial",
+      "note": "Izoh",
+      "notePlaceholder": "Masalan: Mustaqillik kuni",
+      "remove": "Oʻchirish",
+      "empty": "Istisnolar yoʻq",
+      "emptyText": "Bayramlar va koʻchirilgan kunlar shu yerda koʻrinadi."
+    },
+    "catalog": {
+      "title": "Fanlar va yoʻnalishlar",
+      "subtitle": "Maktab boʻyicha umumiy roʻyxatlar — ikkala filial uchun.",
+      "subject": {
+        "title": "Fanlar",
+        "text": "Jadval, jurnal va oʻqituvchi biriktirishda ishlatiladi.",
+        "add": "Fan qoʻshish",
+        "addTitle": "Yangi fan",
+        "editTitle": "Fanni tahrirlash"
+      },
+      "direction": {
+        "title": "Yoʻnalishlar",
+        "text": "8–11 guruhlarining yoʻnalishlari: Iqtisodiyot, Tibbiyot, Filologiya…",
+        "add": "Yoʻnalish qoʻshish",
+        "addTitle": "Yangi yoʻnalish",
+        "editTitle": "Yoʻnalishni tahrirlash"
+      },
+      "nameRu": "Nomi (ruscha)",
+      "nameUz": "Nomi (oʻzbekcha)",
+      "empty": "Roʻyxat boʻsh.",
+      "archived": "Arxivda",
+      "archive": "Arxivga",
+      "restore": "Qaytarish"
+    },
+    "classes": {
+      "title": "Sinflar va guruhlar",
+      "subtitle": "Jami: {count}",
+      "cardTitle": "Sinf",
+      "create": "Sinf qoʻshish",
+      "createTitle": "Yangi sinf yoki guruh",
+      "editTitle": "Sinfni tahrirlash",
+      "type": "Turi",
+      "types": {
+        "REGULAR": "Sinf (1–7)",
+        "DIRECTION_GROUP": "Yoʻnalish guruhi (8–11)"
+      },
+      "name": "Nomi",
+      "namePlaceholderRegular": "Masalan: 5-A",
+      "namePlaceholderGroup": "Masalan: IQTISODIYOT 1",
+      "grade": "Sinf raqami",
+      "gradeN": "{grade}-sinf",
+      "gradeShort": "{grade}-sinf",
+      "choose": "Tanlang",
+      "direction": "Yoʻnalish",
+      "noDirections": "Avval «Fanlar va yoʻnalishlar»da yoʻnalish qoʻshing.",
+      "capacity": "Sigʻimi",
+      "capacityHint": "Bundan koʻp oʻquvchi qoʻshib boʻlmaydi.",
+      "homeroom": "Sinf rahbari",
+      "noStaff": "Avval «Xodimlar»da xodim qoʻshing.",
+      "searchPlaceholder": "Sinf nomi",
+      "year": "Oʻquv yili",
+      "currentYear": "Joriy yil",
+      "empty": "Sinflar topilmadi",
+      "emptyText": "Sinf qoʻshing yoki Excel orqali import qiling.",
+      "occupancy": "Toʻldirilganlik",
+      "full": "toʻla",
+      "branch": "Filial",
+      "archived": "Arxivda",
+      "archive": "Arxivga",
+      "restore": "Arxivdan qaytarish",
+      "backToList": "← Roʻyxatga",
+      "summaryRegular": "{grade}-sinf · {year}",
+      "summaryGroup": "{direction} guruhi · {year}",
+      "week": "Oʻquv haftasi",
+      "weeks": {
+        "REGULAR": "Dushanba–juma",
+        "DIRECTION_GROUP": "Dushanba–shanba (shanba tushgacha)"
+      },
+      "assignments": "Fanlar va oʻqituvchilar",
+      "noAssignments": "Hali biriktirilmagan.",
+      "addAssignment": "Oʻqituvchi biriktirish",
+      "assign": "Biriktirish",
+      "unassign": "Olib tashlash",
+      "subject": "Fan",
+      "teacher": "Oʻqituvchi",
+      "students": "Oʻquvchilar",
+      "noStudents": "Sinfda oʻquvchi yoʻq"
+    }
+  },
+  "people": {
+    "staff": {
+      "title": "Xodimlar",
+      "subtitle": "Jami: {count}",
+      "create": "Xodim qoʻshish",
+      "createTitle": "Yangi xodim",
+      "createText": "Shu telefon raqamli hisob boʻlsa, xodim unga avtomatik bogʻlanadi.",
+      "editTitle": "Xodimni tahrirlash",
+      "fullName": "F.I.Sh.",
+      "phone": "Telefon",
+      "position": "Lavozimi",
+      "positionPlaceholder": "Masalan: matematika oʻqituvchisi",
+      "searchPlaceholder": "Ism, lavozim yoki telefon",
+      "showArchived": "Arxivdagilar ham",
+      "empty": "Xodimlar topilmadi",
+      "emptyText": "Xodim qoʻshing yoki Excel orqali import qiling.",
+      "homeroomOf": "Sinf rahbari",
+      "account": "Hisob",
+      "linked": "Bogʻlangan",
+      "notLinked": "Hisob yoʻq",
+      "archive": "Arxivga",
+      "restore": "Qaytarish"
+    },
+    "students": {
+      "title": "Oʻquvchilar",
+      "subtitle": "Topildi: {count}",
+      "cardTitle": "Oʻquvchi",
+      "create": "Oʻquvchi qoʻshish",
+      "createTitle": "Yangi oʻquvchi",
+      "createText": "GL- raqami avtomatik beriladi.",
+      "editTitle": "Maʼlumotlarni tahrirlash",
+      "lastName": "Familiyasi",
+      "firstName": "Ismi",
+      "middleName": "Otasining ismi",
+      "optional": "Ixtiyoriy",
+      "birthDate": "Tugʻilgan sana",
+      "gender": "Jinsi",
+      "genders": {
+        "MALE": "Oʻgʻil",
+        "FEMALE": "Qiz"
+      },
+      "choose": "Tanlang",
+      "grade": "Sinf raqami",
+      "gradeHint": "1–7 — sinf raqami bilan bir xil; 8–11 — guruhlarda koʻrsatish uchun.",
+      "emergencyName": "Favqulodda aloqa: kim",
+      "emergencyPhone": "Favqulodda aloqa: telefon",
+      "emergency": "Favqulodda aloqa",
+      "class": "Sinf / guruh",
+      "classHint": "Keyinroq ham biriktirish mumkin.",
+      "noClass": "Sinfsiz",
+      "duplicateConfirm": "Bu boshqa oʻquvchi ekaniga ishonchingiz komil boʻlsa, baribir saqlang.",
+      "saveAnyway": "Baribir saqlash",
+      "pickBranch": "Yuqoridagi almashtirgichda filialni tanlang",
+      "searchPlaceholder": "Ism yoki GL- raqami",
+      "statusLabel": "Holati",
+      "status": {
+        "ACTIVE": "Oʻqiydi",
+        "LEFT": "Chiqib ketgan",
+        "GRADUATED": "Bitirgan",
+        "TRANSFERRED": "Koʻchirilgan"
+      },
+      "number": "Raqam",
+      "fullName": "F.I.Sh.",
+      "primaryGuardian": "Asosiy aloqa",
+      "empty": "Oʻquvchilar topilmadi",
+      "emptyText": "Filtrlarni oʻzgartiring yoki oʻquvchi qoʻshing.",
+      "backToList": "← Roʻyxatga",
+      "data": "Maʼlumotlar",
+      "branch": "Filial",
+      "transfer": "Boshqa sinfga oʻtkazish",
+      "transferTitle": "Boshqa sinfga oʻtkazish",
+      "transferText": "Sigʻim va sinf raqami tekshiriladi; oʻtkazish tarixga yoziladi.",
+      "toClass": "Qaysi sinfga",
+      "transferGradeHint": "Masalan, 7-sinfdan 8–11 guruhiga oʻtganda raqam oʻzgaradi.",
+      "reason": "Sabab",
+      "reasonValue": "Sabab: {reason}",
+      "statusTitle": "Holatni oʻzgartirish",
+      "changeStatus": "Holatni oʻzgartirish",
+      "statusDate": "Sana",
+      "statusDateHint": "Boʻsh — bugun.",
+      "historyTitle": "Tarix",
+      "history": {
+        "enrolled": "Qabul qilindi: {class}",
+        "transfer": "Oʻtkazildi: {from} → {to}",
+        "status": "Holat: {from} → {to}"
+      }
+    },
+    "guardians": {
+      "title": "Ota-onalar",
+      "subtitle": "Jami: {count}",
+      "searchPlaceholder": "Ism yoki telefon",
+      "empty": "Ota-onalar topilmadi",
+      "emptyText": "Ota-onalar oʻquvchi kartasidan yoki Excel importi orqali qoʻshiladi.",
+      "fullName": "F.I.Sh.",
+      "phone": "Telefon",
+      "children": "Farzandlari",
+      "relation": "Kim boʻladi",
+      "relations": {
+        "MOTHER": "Onasi",
+        "FATHER": "Otasi",
+        "GUARDIAN": "Vasiy",
+        "OTHER": "Boshqa"
+      },
+      "add": "Ota-ona qoʻshish",
+      "addTitle": "Ota-ona yoki vasiy",
+      "addText": "Shu telefon raqamli odam boʻlsa, bogʻlanadi; boʻlmasa, parolsiz hisob yaratiladi (ilova va bot uchun).",
+      "makePrimary": "Asosiy aloqa",
+      "setPrimary": "Asosiy qilish",
+      "unlink": "Uzish",
+      "none": "Ota-ona qoʻshilmagan.",
+      "primary": "asosiy"
+    }
+  },
+  "import": {
+    "title": "Excel importi",
+    "subtitle": "Filial: {branch}",
+    "pickBranch": "Import uchun yuqoridagi almashtirgichda filialni tanlang.",
+    "step1": "1. Fayl",
+    "step1Text": "Shablonni yuklab oling, toʻldiring va yuklang. Ustunlar oʻzbek yoki rus tilida boʻlishi mumkin.",
+    "kind": "Nimani import qilamiz",
+    "kinds": {
+      "STAFF": "Xodimlar",
+      "CLASSES": "Sinflar va guruhlar",
+      "STUDENTS": "Oʻquvchilar",
+      "GUARDIANS": "Ota-onalar"
+    },
+    "downloadTemplate": "Shablonni yuklab olish",
+    "order": "Tartib: xodimlar → sinflar (sinf rahbari kerak) → oʻquvchilar → ota-onalar (oʻquvchi raqami kerak).",
+    "file": "Fayl (.xlsx)",
+    "check": "Tekshirish",
+    "step2": "2. Tekshiruv",
+    "summary": "Qatorlar: {total} · toʻgʻri: {valid} · xato: {invalid}",
+    "unknownHeaders": "Tanilmagan ustunlar eʼtiborsiz qoldirildi: {headers}",
+    "row": "Qator",
+    "result": "Natija",
+    "values": {
+      "classType": {
+        "REGULAR": "Sinf",
+        "DIRECTION_GROUP": "Guruh"
+      },
+      "gender": {
+        "MALE": "Oʻgʻil",
+        "FEMALE": "Qiz"
+      },
+      "relation": {
+        "MOTHER": "Onasi",
+        "FATHER": "Otasi",
+        "GUARDIAN": "Vasiy",
+        "OTHER": "Boshqa"
+      },
+      "yesNo": {
+        "yes": "Ha",
+        "no": "Yoʻq"
+      }
+    },
+    "ok": "Toʻgʻri",
+    "confirm": "Toʻgʻri qatorlarni import qilish ({count})",
+    "step3": "3. Hisobot",
+    "report": "Import qilindi: {created}. Oʻtkazib yuborildi: {skipped}.",
+    "changedRows": "Tekshiruvdan keyin maʼlumotlar oʻzgargani sabab qatorlar import qilinmadi: {rows}",
+    "helpSheet": "Yoʻriqnoma",
+    "helpColumn": "Ustun",
+    "helpFormat": "Nima yoziladi",
+    "columns": {
+      "STAFF": {
+        "fullName": "F.I.Sh.",
+        "phone": "Telefon",
+        "position": "Lavozimi"
+      },
+      "CLASSES": {
+        "type": "Turi",
+        "name": "Nomi",
+        "gradeLevel": "Sinf raqami",
+        "direction": "Yoʻnalish",
+        "capacity": "Sigʻimi",
+        "homeroomPhone": "Sinf rahbari telefoni"
+      },
+      "STUDENTS": {
+        "lastName": "Familiyasi",
+        "firstName": "Ismi",
+        "middleName": "Otasining ismi",
+        "birthDate": "Tugʻilgan sana",
+        "gender": "Jinsi",
+        "gradeLevel": "Sinf raqami",
+        "className": "Sinf / guruh",
+        "emergencyName": "Favqulodda aloqa: kim",
+        "emergencyPhone": "Favqulodda aloqa: telefon"
+      },
+      "GUARDIANS": {
+        "studentNumber": "Oʻquvchi raqami",
+        "fullName": "F.I.Sh.",
+        "phone": "Telefon",
+        "relation": "Kim boʻladi",
+        "isPrimary": "Asosiy aloqa"
+      }
+    },
+    "hints": {
+      "STAFF": {
+        "fullName": "Toʻliq ism.",
+        "phone": "+998 XX XXX XX XX. Filial ichida takrorlanmaydi.",
+        "position": "Masalan: matematika oʻqituvchisi."
+      },
+      "CLASSES": {
+        "type": "«Sinf» (1–7) yoki «Guruh» (8–11 yoʻnalishlari).",
+        "name": "Masalan: 5-A yoki IQTISODIYOT 1. Joriy oʻquv yilida takrorlanmaydi.",
+        "gradeLevel": "Faqat sinflar uchun: 1–7.",
+        "direction": "Faqat guruhlar uchun: yoʻnalish nomi (roʻyxatdagi kabi).",
+        "capacity": "Oʻquvchilar soni chegarasi: 1–100.",
+        "homeroomPhone": "Xodimlar roʻyxatidagi telefon raqami."
+      },
+      "STUDENTS": {
+        "lastName": "Majburiy.",
+        "firstName": "Majburiy.",
+        "middleName": "Ixtiyoriy.",
+        "birthDate": "KK.OO.YYYY, masalan 02.09.2015. Kelajakdagi sana boʻlmaydi.",
+        "gender": "«Oʻgʻil» yoki «Qiz».",
+        "gradeLevel": "1–11. Sinf uchun — sinf raqami bilan bir xil; guruh uchun — 8–11.",
+        "className": "Joriy yildagi sinf yoki guruh nomi. Boʻsh — sinfsiz.",
+        "emergencyName": "Ixtiyoriy.",
+        "emergencyPhone": "Ixtiyoriy, +998 XX XXX XX XX."
+      },
+      "GUARDIANS": {
+        "studentNumber": "GL-000123 kabi.",
+        "fullName": "Majburiy.",
+        "phone": "+998 XX XXX XX XX. Bir odam — bitta raqam.",
+        "relation": "«Onasi», «Otasi», «Vasiy» yoki «Boshqa».",
+        "isPrimary": "«Ha» yoki «Yoʻq». Birinchi ota-ona avtomatik asosiy boʻladi."
+      }
+    },
+    "valuesColumn": "Qiymatlar",
+    "chooseFile": "Faylni tanlash",
+    "noFile": "Fayl tanlanmagan"
+  },
+  "export": {
+    "sheets": {
+      "classes": "Sinflar",
+      "staff": "Xodimlar",
+      "students": "Oʻquvchilar",
+      "guardians": "Ota-onalar"
+    },
+    "columns": {
+      "classes": {
+        "name": "Nomi",
+        "type": "Turi",
+        "grade": "Sinf raqami",
+        "direction": "Yoʻnalish",
+        "occupied": "Oʻquvchilar",
+        "capacity": "Sigʻimi",
+        "homeroom": "Sinf rahbari",
+        "year": "Oʻquv yili",
+        "branch": "Filial"
+      },
+      "staff": {
+        "fullName": "F.I.Sh.",
+        "phone": "Telefon",
+        "position": "Lavozimi",
+        "homeroom": "Sinf rahbari",
+        "account": "Hisob",
+        "branch": "Filial"
+      },
+      "students": {
+        "number": "Raqam",
+        "lastName": "Familiyasi",
+        "firstName": "Ismi",
+        "middleName": "Otasining ismi",
+        "birthDate": "Tugʻilgan sana",
+        "gender": "Jinsi",
+        "grade": "Sinf raqami",
+        "class": "Sinf / guruh",
+        "status": "Holati",
+        "primaryGuardian": "Asosiy aloqa",
+        "branch": "Filial"
+      },
+      "guardians": {
+        "fullName": "F.I.Sh.",
+        "phone": "Telefon",
+        "children": "Farzandlari"
+      }
+    }
   }
 }
