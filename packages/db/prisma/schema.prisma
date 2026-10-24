@@ -1,6 +1,6 @@
 // Genius Land — схема БД.
-// Этап 0: только служебные таблицы. Филиалы и пользователи появятся на этапе 1,
-// тогда branchId / actorId / updatedById получат внешние ключи.
+// Этап 0: служебные таблицы (Setting, AuditLog).
+// Этап 1: филиалы, пользователи, роли и права, сессии, коды, каналы связи, утверждения.
 
 generator client {
   provider = "prisma-client-js"
@@ -10,6 +10,8 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+// ─── Служебное ───────────────────────────────────────────────────────────────
 
 /// Настройка: бизнес-правила с цифрами живут здесь, а не в коде.
 /// branchId = NULL — глобальное значение; иначе — значение для филиала (перекрывает глобальное).
@@ -23,15 +25,18 @@ model Setting {
   createdAt   DateTime @default(now()) @db.Timestamptz(3)
   updatedAt   DateTime @updatedAt @db.Timestamptz(3)
 
+  branch    Branch? @relation(fields: [branchId], references: [id], onDelete: Restrict)
+  updatedBy User?   @relation("SettingUpdatedBy", fields: [updatedById], references: [id], onDelete: Restrict)
+
   @@unique([key, branchId])
   @@index([branchId])
 }
 
 /// Журнал действий: кто, что, над чем, было/стало, причина, когда, откуда.
-/// Записи только добавляются — не меняются и не удаляются.
+/// Записи только добавляются — не меняются и не удаляются (триггер в БД).
 model AuditLog {
   id         String   @id @default(uuid()) @db.Uuid
-  /// NULL — действие системы (фоновая задача, миграция).
+  /// NULL — действие системы (фоновая задача, миграция) или неизвестного пользователя (неудачный вход).
   actorId    String?  @db.Uuid
   action     String   @db.VarChar(120)
   entityType String   @db.VarChar(80)
@@ -43,8 +48,305 @@ model AuditLog {
   ip         String?  @db.VarChar(45)
   createdAt  DateTime @default(now()) @db.Timestamptz(3)
 
+  actor  User?   @relation("AuditActor", fields: [actorId], references: [id], onDelete: Restrict)
+  branch Branch? @relation(fields: [branchId], references: [id], onDelete: Restrict)
+
   @@index([entityType, entityId])
   @@index([actorId, createdAt])
   @@index([branchId, createdAt])
+  @@index([action, createdAt])
   @@index([createdAt])
+}
+
+/// Счётчики ограничения частоты (вход, отправка кодов): фиксированное окно на ключ.
+model RateLimitBucket {
+  key       String   @id @db.VarChar(200)
+  count     Int
+  resetAt   DateTime @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+
+  @@index([resetAt])
+}
+
+// ─── Организация ─────────────────────────────────────────────────────────────
+
+/// Филиал школы. Название хранится на обоих языках интерфейса.
+model Branch {
+  id        String   @id @default(uuid()) @db.Uuid
+  /// Короткий постоянный код (латиница), например `main`. Не показывается пользователям.
+  code      String   @unique @db.VarChar(40)
+  nameUz    String   @db.VarChar(120)
+  nameRu    String   @db.VarChar(120)
+  address   String?  @db.VarChar(300)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+
+  assignmentBranches RoleAssignmentBranch[]
+  preferredBy        User[]                 @relation("PreferredBranch")
+  settings           Setting[]
+  auditLogs          AuditLog[]
+  approvalRequests   ApprovalRequest[]
+}
+
+// ─── Люди и доступ ───────────────────────────────────────────────────────────
+
+enum UserStatus {
+  ACTIVE
+  /// Заблокирован суперадмином вручную — вход невозможен до разблокировки.
+  BLOCKED
+}
+
+enum UserLocale {
+  uz
+  ru
+}
+
+model User {
+  id                 String     @id @default(uuid()) @db.Uuid
+  /// +998XXXXXXXXX — логин сотрудника и номер для SMS.
+  phone              String     @unique @db.VarChar(13)
+  /// Хранится в нижнем регистре.
+  email              String?    @unique @db.VarChar(254)
+  fullName           String     @db.VarChar(160)
+  /// Пароль — только у сотрудников. Родители и ученики входят по коду (бот/приложение).
+  passwordHash       String?
+  mustChangePassword Boolean    @default(false)
+  passwordChangedAt  DateTime?  @db.Timestamptz(3)
+  locale             UserLocale @default(uz)
+  status             UserStatus @default(ACTIVE)
+  /// Неудачные попытки входа подряд и временная блокировка (настройки auth.*).
+  failedLoginCount   Int        @default(0)
+  lockedUntil        DateTime?  @db.Timestamptz(3)
+  /// Выбор в переключателе филиала. NULL — «Все филиалы» (если доступно) или первый доступный.
+  preferredBranchId  String?    @db.Uuid
+  lastLoginAt        DateTime?  @db.Timestamptz(3)
+  deletedAt          DateTime?  @db.Timestamptz(3)
+  createdAt          DateTime   @default(now()) @db.Timestamptz(3)
+  updatedAt          DateTime   @updatedAt @db.Timestamptz(3)
+
+  preferredBranch     Branch?               @relation("PreferredBranch", fields: [preferredBranchId], references: [id], onDelete: SetNull)
+  roleAssignments     RoleAssignment[]      @relation("AssignmentUser")
+  grantedAssignments  RoleAssignment[]      @relation("AssignmentGrantedBy")
+  sessions            Session[]
+  trustedDevices      TrustedDevice[]
+  otpCodes            OtpCode[]
+  channels            NotificationChannel[]
+  auditLogs           AuditLog[]            @relation("AuditActor")
+  updatedSettings     Setting[]             @relation("SettingUpdatedBy")
+  requestedApprovals  ApprovalRequest[]     @relation("ApprovalRequestedBy")
+  decidedApprovals    ApprovalRequest[]     @relation("ApprovalDecidedBy")
+
+  @@index([status])
+}
+
+/// Право — код `модуль.ресурс.действие`. Список синхронизируется сидом из реестра в `@gl/core`.
+model Permission {
+  code      String   @id @db.VarChar(120)
+  module    String   @db.VarChar(40)
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+
+  roles RolePermission[]
+}
+
+enum PermissionScope {
+  /// Технически всё (суперадмин).
+  SYSTEM
+  /// Все филиалы (основатель).
+  ALL_BRANCHES
+  /// Филиалы из назначения роли.
+  BRANCH
+  /// Классы/группы и предметы, которые ведёт учитель.
+  ASSIGNED
+  /// Класс, где пользователь — классный руководитель.
+  HOMEROOM
+  /// Только свои записи.
+  SELF
+  /// Только свои дети.
+  CHILDREN
+}
+
+/// Роль. Названия — в словарях (`roles.<code>`), не в БД.
+model Role {
+  id        String   @id @default(uuid()) @db.Uuid
+  code      String   @unique @db.VarChar(40)
+  /// Уровень для защиты от повышения привилегий: выдать можно только роль с rank ≤ своего.
+  rank      Int
+  isStaff   Boolean
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+
+  permissions RolePermission[]
+  assignments RoleAssignment[]
+}
+
+model RolePermission {
+  roleId         String          @db.Uuid
+  permissionCode String          @db.VarChar(120)
+  scope          PermissionScope
+
+  role       Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission Permission @relation(fields: [permissionCode], references: [code], onDelete: Cascade)
+
+  @@id([roleId, permissionCode])
+}
+
+/// Пользователь ↔ роль ↔ набор филиалов (бухгалтер — один или оба; основатель — все по области).
+model RoleAssignment {
+  id          String   @id @default(uuid()) @db.Uuid
+  userId      String   @db.Uuid
+  roleId      String   @db.Uuid
+  grantedById String?  @db.Uuid
+  createdAt   DateTime @default(now()) @db.Timestamptz(3)
+
+  user      User                   @relation("AssignmentUser", fields: [userId], references: [id], onDelete: Cascade)
+  role      Role                   @relation(fields: [roleId], references: [id], onDelete: Restrict)
+  grantedBy User?                  @relation("AssignmentGrantedBy", fields: [grantedById], references: [id], onDelete: SetNull)
+  branches  RoleAssignmentBranch[]
+
+  @@unique([userId, roleId])
+  @@index([roleId])
+}
+
+model RoleAssignmentBranch {
+  assignmentId String @db.Uuid
+  branchId     String @db.Uuid
+
+  assignment RoleAssignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  branch     Branch         @relation(fields: [branchId], references: [id], onDelete: Restrict)
+
+  @@id([assignmentId, branchId])
+  @@index([branchId])
+}
+
+enum SessionKind {
+  /// Браузер: токен в httpOnly cookie.
+  WEB
+  /// Приложение: refresh-токен; access-токен короткий и подписанный.
+  API
+}
+
+/// Сессия. В БД — только хеш токена.
+model Session {
+  id         String      @id @default(uuid()) @db.Uuid
+  userId     String      @db.Uuid
+  kind       SessionKind
+  tokenHash  String      @unique @db.VarChar(64)
+  ip         String?     @db.VarChar(45)
+  userAgent  String?     @db.VarChar(400)
+  createdAt  DateTime    @default(now()) @db.Timestamptz(3)
+  lastSeenAt DateTime    @default(now()) @db.Timestamptz(3)
+  expiresAt  DateTime    @db.Timestamptz(3)
+  revokedAt  DateTime?   @db.Timestamptz(3)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, revokedAt])
+}
+
+/// Устройство, с которого уже был вход с кодом: со знакомого устройства код не спрашивается.
+model TrustedDevice {
+  id         String   @id @default(uuid()) @db.Uuid
+  userId     String   @db.Uuid
+  tokenHash  String   @db.VarChar(64)
+  userAgent  String?  @db.VarChar(400)
+  createdAt  DateTime @default(now()) @db.Timestamptz(3)
+  lastUsedAt DateTime @default(now()) @db.Timestamptz(3)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, tokenHash])
+}
+
+enum OtpPurpose {
+  LOGIN
+  PASSWORD_RESET
+  CHANNEL_VERIFY
+}
+
+/// Одноразовый код. В БД — только HMAC кода; живёт `auth.codeTtlMinutes`, используется один раз.
+model OtpCode {
+  id         String     @id @default(uuid()) @db.Uuid
+  userId     String     @db.Uuid
+  purpose    OtpPurpose
+  codeHash   String     @db.VarChar(64)
+  /// Для CHANNEL_VERIFY — проверяемый адрес.
+  target     String?    @db.VarChar(254)
+  attempts   Int        @default(0)
+  expiresAt  DateTime   @db.Timestamptz(3)
+  consumedAt DateTime?  @db.Timestamptz(3)
+  createdAt  DateTime   @default(now()) @db.Timestamptz(3)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, purpose, createdAt])
+}
+
+enum ChannelType {
+  SMS
+  EMAIL
+  TELEGRAM
+}
+
+/// Подключённый канал связи. Коды входа уходят во все включённые и подтверждённые каналы.
+model NotificationChannel {
+  id         String      @id @default(uuid()) @db.Uuid
+  userId     String      @db.Uuid
+  type       ChannelType
+  /// Телефон, e-mail или Telegram chat id.
+  address    String      @db.VarChar(254)
+  isEnabled  Boolean     @default(true)
+  verifiedAt DateTime?   @db.Timestamptz(3)
+  createdAt  DateTime    @default(now()) @db.Timestamptz(3)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, type, address])
+}
+
+// ─── Утверждения ─────────────────────────────────────────────────────────────
+
+/// Кто утверждает заявки данного типа. Типы появляются в модулях (финансы, журнал…).
+model ApprovalPolicy {
+  id               String   @id @default(uuid()) @db.Uuid
+  /// Тип заявки, например `finance.payment.reverse`.
+  type             String   @unique @db.VarChar(120)
+  /// Код роли, которая утверждает: FOUNDER или DIRECTOR (своего филиала).
+  approverRoleCode String   @db.VarChar(40)
+  isActive         Boolean  @default(true)
+  /// Дополнительные условия (пороги и т. п.) — читаются модулем, создающим заявку.
+  conditions       Json?
+  createdAt        DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt        DateTime @updatedAt @db.Timestamptz(3)
+}
+
+enum ApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  CANCELLED
+}
+
+model ApprovalRequest {
+  id               String         @id @default(uuid()) @db.Uuid
+  type             String         @db.VarChar(120)
+  /// Филиал, к которому относится заявка; NULL — общешкольная.
+  branchId         String?        @db.Uuid
+  payload          Json
+  status           ApprovalStatus @default(PENDING)
+  approverRoleCode String         @db.VarChar(40)
+  requestedById    String         @db.Uuid
+  reason           String?
+  decidedById      String?        @db.Uuid
+  decidedAt        DateTime?      @db.Timestamptz(3)
+  decisionComment  String?
+  createdAt        DateTime       @default(now()) @db.Timestamptz(3)
+  updatedAt        DateTime       @updatedAt @db.Timestamptz(3)
+
+  branch      Branch? @relation(fields: [branchId], references: [id], onDelete: Restrict)
+  requestedBy User    @relation("ApprovalRequestedBy", fields: [requestedById], references: [id], onDelete: Restrict)
+  decidedBy   User?   @relation("ApprovalDecidedBy", fields: [decidedById], references: [id], onDelete: Restrict)
+
+  @@index([status, approverRoleCode, branchId])
+  @@index([requestedById])
 }

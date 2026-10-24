@@ -8,7 +8,7 @@ const config: NextConfig = {
   poweredByHeader: false,
   // Workspace packages ship TypeScript sources.
   transpilePackages: ['@gl/core', '@gl/db', '@gl/i18n', '@gl/ui'],
-  serverExternalPackages: ['@prisma/client'],
+  serverExternalPackages: ['@prisma/client', '@node-rs/argon2'],
   // Lint runs once for the whole monorepo (`pnpm lint`), not again inside `next build`.
   eslint: { ignoreDuringBuilds: true },
 };

@@ -5,10 +5,14 @@ import { cn } from '@gl/ui';
 import { useLocale, useTranslations } from 'next-intl';
 import { useParams } from 'next/navigation';
 import { useTransition } from 'react';
+import { rememberLocaleAction } from '@/app/[locale]/(cabinet)/actions';
 import { usePathname, useRouter } from '@/i18n/navigation';
 
-/** Segmented UZ / RU switch: both options are visible, one tap to change. */
-export function LocaleSwitcher() {
+/**
+ * Segmented UZ / RU switch: both options are visible, one tap to change.
+ * In the cabinet (`remember`) the choice is also saved as the user's interface language.
+ */
+export function LocaleSwitcher({ remember = false }: { remember?: boolean }) {
   const t = useTranslations();
   const current = useLocale();
   const router = useRouter();
@@ -18,7 +22,8 @@ export function LocaleSwitcher() {
 
   const change = (locale: Locale) => {
     if (locale === current) return;
-    startTransition(() => {
+    startTransition(async () => {
+      if (remember) await rememberLocaleAction(locale);
       // @ts-expect-error -- params of the current route always match the current pathname.
       router.replace({ pathname, params }, { locale, scroll: false });
     });

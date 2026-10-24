@@ -1,6 +1,8 @@
 import { SCHOOL_TIME_ZONE } from '@gl/core/time';
+import { prisma } from '@gl/db';
 import PgBoss from 'pg-boss';
 import { readEnv } from './env';
+import { AUTH_CLEANUP_CRON, AUTH_CLEANUP_QUEUE, handleAuthCleanup } from './jobs/auth-cleanup';
 import { DEMO_PING_QUEUE, handleDemoPing, type DemoPingPayload } from './jobs/demo-ping';
 import { createLogger } from './logger';
 
@@ -37,6 +39,12 @@ async function main() {
   }
   await boss.send(DEMO_PING_QUEUE, { source: 'startup' });
 
+  await boss.createQueue(AUTH_CLEANUP_QUEUE);
+  await boss.work(AUTH_CLEANUP_QUEUE, async () => {
+    await handleAuthCleanup(prisma, logger);
+  });
+  await boss.schedule(AUTH_CLEANUP_QUEUE, AUTH_CLEANUP_CRON, {}, { tz: SCHOOL_TIME_ZONE });
+
   let stopping = false;
   const shutdown = async (signal: string) => {
     if (stopping) return;
@@ -45,6 +53,7 @@ async function main() {
     try {
       // Stop taking new jobs, let running ones finish, then close the connection pool.
       await boss.stop({ graceful: true, wait: true, timeout: env.WORKER_SHUTDOWN_TIMEOUT_MS });
+      await prisma.$disconnect();
       logger.info('worker stopped');
       process.exit(0);
     } catch (error) {

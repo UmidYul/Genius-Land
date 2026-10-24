@@ -4,8 +4,8 @@ import { LayoutDashboard } from 'lucide-react';
 import type { Metadata } from 'next';
 import type { Locale } from 'next-intl';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { connection } from 'next/server';
 import { PageHeader } from '@/components/page-header';
+import { requireAuth } from '@/lib/auth';
 
 export async function generateMetadata({
   params,
@@ -20,14 +20,13 @@ export async function generateMetadata({
 export default async function HomePage({ params }: { params: Promise<{ locale: Locale }> }) {
   const { locale } = await params;
   setRequestLocale(locale);
-  // Render on every request: "today" must never come from a build-time snapshot.
-  await connection();
+  const { actor } = await requireAuth();
   const t = await getTranslations('home');
 
   return (
     <>
       <PageHeader
-        title={t('title')}
+        title={t('greeting', { name: actor.fullName })}
         description={
           <span className="tabular-nums">{t('today', { date: formatDate(new Date()) })}</span>
         }

@@ -2,17 +2,26 @@
 
 import { Menu, X } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { usePathname } from '@/i18n/navigation';
 import { Logo } from '../logo';
 import { NavList } from './nav-list';
 
 /**
  * Slide-out menu for phones and tablets. A drawer (not a bottom bar) because the menu grows
- * with permissions in stage 1 and a bottom bar fits only 4–5 items.
+ * with permissions and a bottom bar fits only 4–5 items.
  * Built on <dialog>: focus trap, Esc and inert background come from the browser.
  */
-export function MobileNav() {
+export function MobileNav({
+  allowed,
+  badges,
+  switcher,
+}: {
+  allowed: string[];
+  badges: Record<string, number>;
+  /** Branch switcher, shown inside the drawer on narrow screens. */
+  switcher?: ReactNode;
+}) {
   const t = useTranslations('nav');
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDialogElement>(null);
@@ -50,7 +59,7 @@ export function MobileNav() {
       >
         <nav
           aria-label={t('mainMenu')}
-          className="flex h-full flex-col gap-4 p-3 pt-[max(0.75rem,env(safe-area-inset-top))]"
+          className="flex h-full flex-col gap-4 overflow-y-auto p-3 pt-[max(0.75rem,env(safe-area-inset-top))]"
         >
           <div className="flex items-center justify-between ps-2">
             <Logo size={36} />
@@ -63,7 +72,8 @@ export function MobileNav() {
               <X className="size-5" strokeWidth={1.75} aria-hidden />
             </button>
           </div>
-          <NavList onNavigate={() => setOpen(false)} />
+          {switcher && <div className="sm:hidden">{switcher}</div>}
+          <NavList allowed={allowed} badges={badges} onNavigate={() => setOpen(false)} />
         </nav>
       </dialog>
     </>

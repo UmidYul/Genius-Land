@@ -15,6 +15,34 @@ export const errorCodes = [
   'SETTING_INVALID',
   'MONEY_INVALID',
   'MONEY_NEGATIVE',
+  // Sign-in
+  'AUTH_INVALID_CREDENTIALS',
+  'AUTH_LOCKED',
+  'AUTH_BLOCKED',
+  'AUTH_RATE_LIMITED',
+  'AUTH_CODE_INVALID',
+  'AUTH_CODE_EXPIRED',
+  'AUTH_CODE_TOO_SOON',
+  'AUTH_NO_CHANNEL',
+  // Passwords and contacts
+  'PASSWORD_WEAK',
+  'PASSWORD_MISMATCH',
+  'PASSWORD_WRONG',
+  'PHONE_INVALID',
+  'PHONE_TAKEN',
+  'EMAIL_INVALID',
+  'EMAIL_TAKEN',
+  // Administration
+  'ROLE_ESCALATION',
+  'ROLE_BRANCH_REQUIRED',
+  'LAST_SUPERADMIN',
+  'SELF_ACTION',
+  'BRANCH_CODE_TAKEN',
+  // Approvals
+  'APPROVAL_NO_POLICY',
+  'APPROVAL_NOT_PENDING',
+  'APPROVAL_OWN_REQUEST',
+  'APPROVAL_COMMENT_REQUIRED',
 ] as const;
 
 export type ErrorCode = (typeof errorCodes)[number];

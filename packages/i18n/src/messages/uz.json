@@ -9,8 +9,17 @@
     "close": "Yopish",
     "cancel": "Bekor qilish",
     "save": "Saqlash",
+    "saved": "Saqlandi.",
+    "edit": "Tahrirlash",
     "confirm": "Tasdiqlash",
+    "search": "Qidirish",
+    "all": "Hammasi",
+    "apply": "Qoʻllash",
     "skipToContent": "Asosiy qismga oʻtish",
+    "pagination": "Sahifalar",
+    "previous": "Oldingi sahifa",
+    "next": "Keyingi sahifa",
+    "pageOf": "{page}-sahifa / {pages}",
     "currency": {
       "sum": "soʻm"
     }
@@ -20,13 +29,27 @@
     "openMenu": "Menyuni ochish",
     "closeMenu": "Menyuni yopish",
     "home": "Bosh sahifa",
-    "designSystem": "Dizayn tizimi"
+    "approvals": "Tasdiqlash",
+    "adminUsers": "Foydalanuvchilar",
+    "adminBranches": "Filiallar",
+    "adminRoles": "Rollar va huquqlar",
+    "adminSettings": "Sozlamalar",
+    "adminAudit": "Amallar jurnali",
+    "designSystem": "Dizayn tizimi",
+    "section": {
+      "main": "Asosiy",
+      "admin": "Boshqaruv",
+      "dev": "Ishlab chiqish"
+    }
   },
   "topbar": {
     "language": "Til",
     "theme": "Mavzu",
     "profile": "Profil",
-    "profilePlaceholder": "Kirish 1-bosqichda qoʻshiladi"
+    "myProfile": "Mening profilim",
+    "signOut": "Chiqish",
+    "branch": "Filial",
+    "allBranches": "Barcha filiallar"
   },
   "theme": {
     "light": "Yorugʻ",
@@ -37,16 +60,333 @@
     "uz": "Oʻzbekcha",
     "ru": "Русский"
   },
+  "roles": {
+    "SUPERADMIN": "Superadmin",
+    "FOUNDER": "Taʼsischi",
+    "DIRECTOR": "Direktor",
+    "ACCOUNTANT": "Buxgalter",
+    "ADMINISTRATOR": "Administrator",
+    "TEACHER": "Oʻqituvchi",
+    "PARENT": "Ota-ona",
+    "STUDENT": "Oʻquvchi"
+  },
+  "scopes": {
+    "SYSTEM": "Tizim",
+    "ALL_BRANCHES": "Barcha filiallar",
+    "BRANCH": "Oʻz filiali",
+    "ASSIGNED": "Oʻz sinflari va fanlari",
+    "HOMEROOM": "Sinf rahbarligi",
+    "SELF": "Faqat oʻzi",
+    "CHILDREN": "Oʻz farzandlari"
+  },
+  "channels": {
+    "SMS": "SMS",
+    "EMAIL": "E-mail",
+    "TELEGRAM": "Telegram"
+  },
+  "access": {
+    "modules": {
+      "dashboard": "Panel",
+      "reports": "Hisobotlar",
+      "people": "Oʻquvchilar va ota-onalar",
+      "school": "Maktab tuzilmasi",
+      "schedule": "Dars jadvali",
+      "journal": "Jurnal",
+      "finance": "Moliya",
+      "approvals": "Tasdiqlash",
+      "notifications": "Xabarnomalar",
+      "discipline": "Intizom",
+      "admin": "Boshqaruv"
+    },
+    "resources": {
+      "overview": "umumiy koʻrinish",
+      "branchComparison": "filiallarni solishtirish",
+      "report": "hisobot",
+      "student": "oʻquvchi",
+      "guardian": "ota-ona",
+      "academicYear": "oʻquv yili",
+      "calendar": "kalendar",
+      "class": "sinf va guruh",
+      "subject": "fan",
+      "teachingAssignment": "oʻqituvchi biriktirilishi",
+      "timetable": "jadval",
+      "change": "jadvaldagi oʻzgarish",
+      "lesson": "dars",
+      "topic": "dars mavzusi",
+      "grade": "baho",
+      "attendance": "davomat",
+      "termGrade": "chorak/yillik baho",
+      "contract": "shartnoma",
+      "invoice": "hisob",
+      "payment": "toʻlov",
+      "discount": "chegirma",
+      "debt": "qarzdorlik",
+      "policy": "toʻlov siyosati",
+      "request": "ariza",
+      "broadcast": "xabar tarqatish",
+      "paymentReminder": "toʻlov eslatmasi",
+      "record": "qayd",
+      "violationType": "qoidabuzarlik turi",
+      "score": "ball",
+      "branch": "filial",
+      "user": "foydalanuvchi",
+      "role": "rol",
+      "setting": "sozlama",
+      "audit": "amallar jurnali"
+    },
+    "actions": {
+      "view": "koʻrish",
+      "export": "eksport",
+      "manage": "boshqarish",
+      "write": "kiritish",
+      "backdate": "oʻtgan sana bilan tuzatish",
+      "set": "qoʻyish",
+      "approve": "tasdiqlash",
+      "unlock": "qulfdan chiqarish",
+      "create": "yaratish",
+      "reverse": "storno",
+      "writeOff": "hisobdan chiqarish",
+      "propose": "taklif qilish",
+      "decide": "qaror qabul qilish",
+      "send": "yuborish"
+    }
+  },
+  "settings": {
+    "auth": {
+      "maxFailedAttempts": {
+        "label": "Notoʻgʻri urinishlar soni",
+        "hint": "Shuncha marta notoʻgʻri parol kiritilsa, hisob vaqtincha bloklanadi."
+      },
+      "lockMinutes": {
+        "label": "Bloklash muddati, daqiqa",
+        "hint": "Notoʻgʻri urinishlardan keyin hisob qancha vaqt bloklanadi."
+      },
+      "codeTtlMinutes": {
+        "label": "Kodning amal qilish muddati, daqiqa",
+        "hint": "Kirish va parolni tiklash kodi shuncha vaqt ishlaydi."
+      },
+      "codeMaxAttempts": {
+        "label": "Bitta kod uchun urinishlar",
+        "hint": "Shuncha notoʻgʻri kiritishdan keyin kod bekor boʻladi."
+      },
+      "codeResendSeconds": {
+        "label": "Kodni qayta yuborish oraligʻi, soniya",
+        "hint": "Yangi kodni oldingisidan keyin qancha vaqtdan soʻng soʻrash mumkin."
+      },
+      "sessionTtlDays": {
+        "label": "Seans muddati, kun",
+        "hint": "Shuncha kundan keyin qayta kirish kerak boʻladi."
+      },
+      "rateLimit": {
+        "loginPerIpPerMinute": {
+          "label": "Bir manzildan kirishlar, daqiqasiga",
+          "hint": "Bitta IP manzildan daqiqasiga kirish urinishlari chegarasi."
+        },
+        "codesPerUserPerHour": {
+          "label": "Bitta foydalanuvchiga kodlar, soatiga",
+          "hint": "Bitta foydalanuvchiga soatiga yuboriladigan kodlar chegarasi."
+        },
+        "codesPerIpPerHour": {
+          "label": "Bir manzildan kodlar, soatiga",
+          "hint": "Bitta IP manzildan soatiga soʻraladigan kodlar chegarasi."
+        }
+      }
+    }
+  },
+  "notifications": {
+    "loginCode": {
+      "subject": "Genius Land: kirish kodi",
+      "text": "Genius Land: kirish kodi {code}. {minutes} daqiqa amal qiladi. Kodni hech kimga aytmang."
+    },
+    "passwordResetCode": {
+      "subject": "Genius Land: parolni tiklash",
+      "text": "Genius Land: parolni tiklash kodi {code}. {minutes} daqiqa amal qiladi. Agar siz soʻramagan boʻlsangiz, eʼtibor bermang."
+    },
+    "channelVerifyCode": {
+      "subject": "Genius Land: e-mailni tasdiqlash",
+      "text": "Genius Land: e-mailni tasdiqlash kodi {code}. {minutes} daqiqa amal qiladi."
+    }
+  },
   "home": {
     "title": "Bosh sahifa",
+    "greeting": "Assalomu alaykum, {name}",
     "today": "Bugun: {date}",
     "emptyTitle": "Bu yerda tez orada maʼlumotlar paydo boʻladi",
-    "emptyText": "Modullar keyingi bosqichlarda qoʻshiladi: kirish va rollar, maktab tuzilmasi, dars jadvali, jurnal, toʻlovlar."
+    "emptyText": "Modullar keyingi bosqichlarda qoʻshiladi: maktab tuzilmasi, dars jadvali, jurnal, toʻlovlar."
   },
   "auth": {
     "title": "Tizimga kirish",
-    "comingSoon": "Kirish sahifasi 1-bosqichda qoʻshiladi.",
+    "subtitle": "Telefon raqamingiz va parolingizni kiriting",
+    "phone": "Telefon raqami",
+    "phonePlaceholder": "+998 90 123 45 67",
+    "password": "Parol",
+    "signIn": "Kirish",
+    "forgotPassword": "Parolni unutdingizmi?",
+    "passwordResetDone": "Parol yangilandi. Yangi parol bilan kiring.",
+    "codeTitle": "Tasdiqlash kodi",
+    "codeSentTo": "Bu qurilmadan birinchi marta kiryapsiz. 6 xonali kod quyidagi manzillarga yuborildi:",
+    "code": "Kod",
+    "confirm": "Tasdiqlash",
+    "back": "Orqaga",
+    "resend": "Kodni qayta yuborish",
+    "codeResent": "Yangi kod yuborildi.",
+    "forgotTitle": "Parolni tiklash",
+    "forgotText": "Telefon raqamingizni kiriting — kod barcha ulangan manzillaringizga yuboriladi.",
+    "sendCode": "Kod yuborish",
+    "resetTitle": "Yangi parol",
+    "resetText": "Agar raqam roʻyxatdan oʻtgan boʻlsa, kod yuborildi. Kodni va yangi parolni kiriting.",
+    "newPassword": "Yangi parol",
+    "confirmPassword": "Parolni takrorlang",
+    "passwordRules": "Kamida 8 ta belgi, harflar va raqamlar.",
+    "savePassword": "Parolni saqlash",
     "toHome": "Bosh sahifaga"
+  },
+  "profile": {
+    "title": "Profil",
+    "mustChangeTitle": "Parolni almashtiring",
+    "mustChangeText": "Sizga vaqtinchalik parol berilgan. Davom etish uchun oʻzingizning parolingizni oʻrnating.",
+    "phone": "Telefon",
+    "email": "E-mail",
+    "language": "Interfeys tili",
+    "languageText": "Kirgandan keyin interfeys shu tilda ochiladi.",
+    "save": "Saqlash",
+    "password": "Parol",
+    "currentPassword": "Joriy parol",
+    "passwordChanged": "Parol oʻzgartirildi. Boshqa qurilmalardagi seanslar yakunlandi.",
+    "channels": "Aloqa kanallari",
+    "channelsText": "Kirish kodlari barcha ulangan kanallarga yuboriladi.",
+    "remove": "Oʻchirish",
+    "addEmail": "E-mail qoʻshish",
+    "emailCodeSent": "Kod koʻrsatilgan e-mailga yuborildi.",
+    "emailAdded": "E-mail qoʻshildi.",
+    "telegramLater": "Telegram-bot keyinroq ulanadi.",
+    "sessions": "Faol seanslar",
+    "sessionsText": "Hisobingizga kirilgan qurilmalar.",
+    "thisDevice": "Bu qurilma",
+    "lastSeen": "Oxirgi faollik: {time}",
+    "signOutDevice": "Chiqarish",
+    "signOutOthers": "Boshqa qurilmalardan chiqish"
+  },
+  "approvals": {
+    "title": "Tasdiqlash",
+    "subtitle": "Tasdiqlashni talab qiladigan muhim amallar.",
+    "queue": "Tasdiqlash kutilmoqda",
+    "queueEmpty": "Tasdiqlash uchun ariza yoʻq",
+    "queueEmptyText": "Yangi arizalar shu yerda paydo boʻladi.",
+    "requestedBy": "{name} · {branch}",
+    "schoolWide": "Butun maktab",
+    "mine": "Mening arizalarim",
+    "mineEmpty": "Siz hali ariza yubormagansiz.",
+    "cancel": "Bekor qilish",
+    "approve": "Tasdiqlash",
+    "reject": "Rad etish",
+    "approveTitle": "Arizani tasdiqlash",
+    "rejectTitle": "Arizani rad etish",
+    "commentRequired": "Sabab (majburiy)",
+    "commentOptional": "Izoh (ixtiyoriy)",
+    "approved": "Ariza tasdiqlandi.",
+    "rejected": "Ariza rad etildi.",
+    "status": {
+      "PENDING": "Kutilmoqda",
+      "APPROVED": "Tasdiqlangan",
+      "REJECTED": "Rad etilgan",
+      "CANCELLED": "Bekor qilingan"
+    }
+  },
+  "admin": {
+    "branches": {
+      "title": "Filiallar",
+      "subtitle": "Maktab filiallari. Nomi ikki tilda saqlanadi.",
+      "create": "Filial qoʻshish",
+      "createTitle": "Yangi filial",
+      "editTitle": "Filialni tahrirlash",
+      "code": "Kod",
+      "codeHint": "Lotin harflari, masalan: main. Keyin oʻzgartirib boʻlmaydi.",
+      "nameUz": "Nomi (oʻzbekcha)",
+      "nameRu": "Nomi (ruscha)",
+      "address": "Manzil",
+      "created": "Filial qoʻshildi.",
+      "saved": "Filial saqlandi."
+    },
+    "users": {
+      "title": "Foydalanuvchilar",
+      "subtitle": "Jami: {count}",
+      "userTitle": "Foydalanuvchi",
+      "create": "Foydalanuvchi qoʻshish",
+      "createTitle": "Yangi foydalanuvchi",
+      "createText": "Vaqtinchalik parol yaratiladi — uni xodimga shaxsan bering. Birinchi kirishda u oʻz parolini oʻrnatadi.",
+      "searchPlaceholder": "Ism, telefon yoki e-mail",
+      "role": "Rol",
+      "branch": "Filial",
+      "status": "Holat",
+      "statusActive": "Faol",
+      "statusBlocked": "Bloklangan",
+      "statusLocked": "Vaqtincha bloklangan",
+      "empty": "Foydalanuvchilar topilmadi",
+      "fullName": "F.I.Sh.",
+      "phone": "Telefon",
+      "email": "E-mail",
+      "language": "Interfeys tili",
+      "roles": "Rollar va filiallar",
+      "optional": "Ixtiyoriy",
+      "pickBranch": "Kamida bitta filialni tanlang.",
+      "createdWithPassword": "Foydalanuvchi yaratildi. Vaqtinchalik parol:",
+      "passwordResetWithPassword": "Parol tiklandi, barcha seanslar yakunlandi. Yangi vaqtinchalik parol:",
+      "copy": "Nusxa olish",
+      "copied": "Nusxa olindi",
+      "passwordShownOnce": "Parol faqat bir marta koʻrsatiladi.",
+      "openUser": "Foydalanuvchi kartasini ochish",
+      "profile": "Maʼlumotlar",
+      "reason": "Sabab",
+      "actions": "Amallar",
+      "resetPassword": "Parolni tiklash",
+      "unlock": "Qulfdan chiqarish",
+      "block": "Bloklash",
+      "unblock": "Blokdan chiqarish",
+      "backToList": "← Roʻyxatga",
+      "lastLogin": "Oxirgi kirish: {time}",
+      "neverLoggedIn": "Hali kirmagan",
+      "done": {
+        "unlock": "Hisob qulfdan chiqarildi.",
+        "block": "Hisob bloklandi, seanslar yakunlandi.",
+        "unblock": "Hisob blokdan chiqarildi."
+      }
+    },
+    "roles": {
+      "title": "Rollar va huquqlar",
+      "subtitle": "Faqat koʻrish uchun. Har bir huquq — amal va koʻrinish doirasi.",
+      "meta": "Daraja {rank} · foydalanuvchilar: {users}",
+      "noPermissions": "Huquqlar yoʻq."
+    },
+    "settings": {
+      "title": "Sozlamalar",
+      "subtitle": "Raqamli qoidalar reliz qilmasdan oʻzgartiriladi. Har bir oʻzgarish jurnalga yoziladi.",
+      "default": "Standart qiymat: {value}",
+      "value": "Qiymat",
+      "reason": "Oʻzgartirish sababi"
+    },
+    "audit": {
+      "title": "Amallar jurnali",
+      "subtitle": "Yozuvlar: {count}",
+      "action": "Amal",
+      "actionPlaceholder": "masalan, auth. yoki admin.user.",
+      "entityType": "Obyekt turi",
+      "entityId": "Obyekt ID",
+      "branch": "Filial",
+      "actorId": "Foydalanuvchi ID",
+      "from": "Sanadan",
+      "to": "Sanagacha",
+      "empty": "Yozuvlar topilmadi",
+      "time": "Vaqt",
+      "actor": "Kim",
+      "entity": "Obyekt",
+      "details": "Tafsilotlar",
+      "system": "Tizim",
+      "reason": "Sabab: {reason}",
+      "changes": "Oʻzgarishlar",
+      "before": "Avval",
+      "after": "Keyin"
+    }
   },
   "designSystem": {
     "title": "Dizayn tizimi",
@@ -94,6 +434,30 @@
     "SETTING_UNKNOWN": "Nomaʼlum sozlama: {key}.",
     "SETTING_INVALID": "Sozlama qiymati notoʻgʻri: {key}.",
     "MONEY_INVALID": "Summa notoʻgʻri.",
-    "MONEY_NEGATIVE": "Summa manfiy boʻlishi mumkin emas."
+    "MONEY_NEGATIVE": "Summa manfiy boʻlishi mumkin emas.",
+    "AUTH_INVALID_CREDENTIALS": "Telefon raqami yoki parol notoʻgʻri.",
+    "AUTH_LOCKED": "Juda koʻp notoʻgʻri urinish. Hisob {minutes} daqiqaga bloklandi.",
+    "AUTH_BLOCKED": "Hisob bloklangan. Administratorga murojaat qiling.",
+    "AUTH_RATE_LIMITED": "Juda koʻp urinish. {seconds} soniyadan keyin qayta urinib koʻring.",
+    "AUTH_CODE_INVALID": "Kod notoʻgʻri.",
+    "AUTH_CODE_EXPIRED": "Kod eskirgan yoki allaqachon ishlatilgan. Yangi kod soʻrang.",
+    "AUTH_CODE_TOO_SOON": "Yangi kodni {seconds} soniyadan keyin soʻrash mumkin.",
+    "AUTH_NO_CHANNEL": "Kod yuborish uchun aloqa kanali yoʻq. Administratorga murojaat qiling.",
+    "PASSWORD_WEAK": "Parol kamida {min} ta belgidan iborat boʻlishi va harf hamda raqamni oʻz ichiga olishi kerak.",
+    "PASSWORD_MISMATCH": "Parollar mos kelmadi.",
+    "PASSWORD_WRONG": "Joriy parol notoʻgʻri.",
+    "PHONE_INVALID": "Telefon raqami notoʻgʻri. Format: +998 XX XXX XX XX.",
+    "PHONE_TAKEN": "Bu telefon raqami allaqachon roʻyxatdan oʻtgan.",
+    "EMAIL_INVALID": "E-mail notoʻgʻri.",
+    "EMAIL_TAKEN": "Bu e-mail allaqachon band.",
+    "ROLE_ESCALATION": "Oʻzingiznikidan yuqori rolni berish yoki oʻzgartirish mumkin emas.",
+    "ROLE_BRANCH_REQUIRED": "Bu rol uchun kamida bitta filialni tanlang.",
+    "LAST_SUPERADMIN": "Oxirgi faol superadminni olib tashlab yoki bloklab boʻlmaydi.",
+    "SELF_ACTION": "Bu amalni oʻzingizga nisbatan bajarib boʻlmaydi.",
+    "BRANCH_CODE_TAKEN": "Bu kod band.",
+    "APPROVAL_NO_POLICY": "Bunday turdagi ariza uchun tasdiqlash qoidasi yoʻq.",
+    "APPROVAL_NOT_PENDING": "Ariza allaqachon koʻrib chiqilgan.",
+    "APPROVAL_OWN_REQUEST": "Oʻz arizangizni tasdiqlab boʻlmaydi.",
+    "APPROVAL_COMMENT_REQUIRED": "Rad etish sababini koʻrsating."
   }
 }

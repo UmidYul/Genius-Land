@@ -64,7 +64,17 @@ export default tseslint.config(
             include: ['^(aria-label|aria-description|title|alt|placeholder|label)$'],
           },
           // Arguments of translators (t, tCommon…) are dictionary keys, not interface text.
-          callees: { exclude: ['^t$', '^t[A-Z]\\w*$', '^(use|get)Translations$', '^cn$'] },
+          // Permission checks and command helpers take codes, not interface text.
+          callees: {
+            exclude: [
+              '^t$',
+              '^t[A-Z]\\w*$',
+              '^(use|get)Translations$',
+              '^cn$',
+              '^can(Any)?$',
+              '^command$',
+            ],
+          },
           // Allow only text without letters: digits, punctuation, symbols such as "*".
           words: { exclude: ['^[\\s\\d.,:;!?*()\\[\\]{}<>/|+=_#%&@~^"\'`·—–…-]*$'] },
         },
@@ -73,7 +83,7 @@ export default tseslint.config(
   },
   {
     // Seed and scripts print progress to the console on purpose.
-    files: ['packages/db/prisma/**', 'test/**', 'e2e/**'],
+    files: ['packages/core/src/seed/**', 'test/**', 'e2e/**'],
     rules: { 'no-console': 'off' },
   },
   prettier,

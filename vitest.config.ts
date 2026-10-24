@@ -4,6 +4,8 @@ import { defineConfig } from 'vitest/config';
 loadEnv({ path: new URL('./.env', import.meta.url), quiet: true });
 
 const testDatabaseUrl = process.env.DATABASE_URL_TEST ?? '';
+// Tests never use the real secret; a fixed one keeps them reproducible.
+const testSecret = 'test-secret-test-secret-test-secret-0123456789';
 
 export default defineConfig({
   test: {
@@ -13,6 +15,7 @@ export default defineConfig({
           name: 'unit',
           environment: 'node',
           include: ['packages/*/src/**/*.test.ts', 'apps/*/src/**/*.test.ts'],
+          env: { AUTH_SECRET: testSecret },
           exclude: ['**/*.int.test.ts', '**/node_modules/**'],
         },
       },
@@ -25,7 +28,7 @@ export default defineConfig({
           // Integration tests share one database: run files one after another.
           pool: 'forks',
           poolOptions: { forks: { singleFork: true } },
-          env: { DATABASE_URL: testDatabaseUrl, NODE_ENV: 'test' },
+          env: { DATABASE_URL: testDatabaseUrl, NODE_ENV: 'test', AUTH_SECRET: testSecret },
         },
       },
     ],

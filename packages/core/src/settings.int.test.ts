@@ -1,6 +1,6 @@
 import { prisma } from '@gl/db';
-import { randomUUID } from 'node:crypto';
 import { beforeEach, describe, expect, it } from 'vitest';
+import { createUser, setupWorld, type TestWorld } from './testing/fixtures';
 import { z } from 'zod';
 import { writeAudit } from './audit';
 import { createSettingsReader, defineSetting, updateSetting } from './settings';
@@ -19,10 +19,12 @@ const schoolName = defineSetting({
   scope: 'global',
 });
 
-const actor = { actorId: randomUUID(), ip: '127.0.0.1' };
+let world: TestWorld;
+let actor: { actorId: string; ip: string };
 
 beforeEach(async () => {
-  await prisma.$executeRawUnsafe('TRUNCATE "Setting", "AuditLog"');
+  world = await setupWorld();
+  actor = { actorId: (await createUser()).id, ip: '127.0.0.1' };
 });
 
 describe('settings', () => {
@@ -31,8 +33,7 @@ describe('settings', () => {
   });
 
   it('branch value overrides global, global overrides default', async () => {
-    const branchA = randomUUID();
-    const branchB = randomUUID();
+    const { branchA, branchB } = world;
     expect((await updateSetting(prisma, backdateDays, { value: 5, actor })).ok).toBe(true);
     expect(
       (await updateSetting(prisma, backdateDays, { value: 3, branchId: branchA, actor })).ok,
@@ -72,7 +73,7 @@ describe('settings', () => {
     });
     const res = await updateSetting(prisma, schoolName, {
       value: 'x',
-      branchId: randomUUID(),
+      branchId: world.branchA,
       actor,
     });
     expect(res.ok).toBe(false);

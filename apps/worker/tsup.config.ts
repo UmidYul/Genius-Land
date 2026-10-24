@@ -1,7 +1,7 @@
 import { defineConfig } from 'tsup';
 
 // Workspace packages ship TypeScript sources, so they are bundled into the worker;
-// npm dependencies (Prisma, pg-boss) stay external and are resolved from node_modules.
+// npm dependencies (Prisma, pg-boss, argon2) stay external and are resolved from node_modules.
 export default defineConfig({
   entry: ['src/index.ts'],
   format: ['esm'],
@@ -10,4 +10,5 @@ export default defineConfig({
   clean: true,
   sourcemap: true,
   noExternal: [/^@gl\//],
+  external: ['@prisma/client', '@node-rs/argon2', 'pg-boss'],
 });

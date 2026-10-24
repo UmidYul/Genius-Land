@@ -1,16 +1,26 @@
 'use client';
 
 import { cn } from '@gl/ui';
-import { CircleUserRound } from 'lucide-react';
+import { CircleUserRound, LogOut, UserCog } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useEffect, useId, useRef, useState } from 'react';
+import { signOutAction } from '@/app/[locale]/(cabinet)/actions';
+import { Link } from '@/i18n/navigation';
 import { ThemeSwitcher } from './theme-switcher';
 
-/**
- * Profile button with a small panel. Stage 0 has no users yet: the panel shows a placeholder
- * and the theme choice. Stage 1 adds the user's name, role, branch and sign-out.
- */
-export function ProfileMenu() {
+const itemClass =
+  'flex h-11 w-full cursor-pointer items-center gap-3 rounded-xl px-2.5 text-sm font-medium text-fg transition-[background-color] duration-150 hover:bg-surface-3';
+
+/** Profile button: who is signed in, theme, profile page, sign out. */
+export function ProfileMenu({
+  name,
+  roles,
+  branch,
+}: {
+  name: string;
+  roles: string[];
+  branch: string | null;
+}) {
   const t = useTranslations('topbar');
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -65,13 +75,26 @@ export function ProfileMenu() {
               <CircleUserRound className="size-5" strokeWidth={1.75} aria-hidden />
             </span>
             <div className="min-w-0">
-              <p className="text-fg text-sm font-semibold">{t('profile')}</p>
-              <p className="text-fg-muted text-xs">{t('profilePlaceholder')}</p>
+              <p className="text-fg truncate text-sm font-semibold">{name}</p>
+              <p className="text-fg-muted truncate text-xs">{roles.join(', ')}</p>
+              {branch && <p className="text-fg-muted truncate text-xs">{branch}</p>}
             </div>
           </div>
           <div className="flex flex-col gap-1.5">
             <p className="text-fg-muted px-1 text-xs font-semibold">{t('theme')}</p>
             <ThemeSwitcher />
+          </div>
+          <div className="border-border-soft flex flex-col gap-0.5 border-t pt-2">
+            <Link href="/profile" className={itemClass} onClick={() => setOpen(false)}>
+              <UserCog aria-hidden strokeWidth={1.75} className="text-fg-muted size-5" />
+              {t('myProfile')}
+            </Link>
+            <form action={signOutAction}>
+              <button type="submit" className={itemClass}>
+                <LogOut aria-hidden strokeWidth={1.75} className="text-fg-muted size-5" />
+                {t('signOut')}
+              </button>
+            </form>
           </div>
         </div>
       )}

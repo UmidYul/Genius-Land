@@ -1,7 +1,7 @@
-import { Prisma, PrismaClient } from '@prisma/client';
+import { PrismaClient, type Prisma } from '@prisma/client';
 
-export { Prisma, PrismaClient };
-export type { AuditLog, Setting } from '@prisma/client';
+// Generated model types and enums (User, Session, PermissionScope, …).
+export * from '@prisma/client';
 
 /** Either the root client or a transaction client — domain functions accept both. */
 export type Db = PrismaClient | Prisma.TransactionClient;

@@ -23,11 +23,13 @@
     "db:generate": "pnpm --filter @gl/db generate",
     "db:migrate": "pnpm --filter @gl/db migrate",
     "db:migrate:dev": "pnpm --filter @gl/db migrate:dev",
-    "db:seed": "pnpm --filter @gl/db seed",
+    "db:seed": "pnpm --filter @gl/core seed",
     "db:studio": "pnpm --filter @gl/db studio"
   },
   "devDependencies": {
     "@eslint/js": "^9.28.0",
+    "@gl/core": "workspace:*",
+    "@gl/db": "workspace:*",
     "@gl/i18n": "workspace:*",
     "@next/eslint-plugin-next": "^15.3.3",
     "@playwright/test": "^1.53.0",

@@ -11,7 +11,6 @@
     "postinstall": "prisma generate",
     "migrate": "dotenv -e ../../.env -- prisma migrate deploy",
     "migrate:dev": "dotenv -e ../../.env -- prisma migrate dev",
-    "seed": "dotenv -e ../../.env -- tsx prisma/seed.ts",
     "studio": "dotenv -e ../../.env -- prisma studio",
     "typecheck": "tsc --noEmit"
   },
@@ -20,7 +19,6 @@
   },
   "devDependencies": {
     "dotenv-cli": "^8.0.0",
-    "prisma": "^6.9.0",
-    "tsx": "^4.20.3"
+    "prisma": "^6.9.0"
   }
 }
