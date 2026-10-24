@@ -1,44 +1,55 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Guidance for Claude when working in this repository.
 
-## Project Status
+## Project
 
-This is a newly initialized repository. The project structure and development commands are still being established. This document will be updated as the codebase grows.
+**Genius Land** — новая платформа управления частной школой Genius Land (два филиала, 1–11 классы, ~700–800 учеников). Электронный журнал + администрирование + оплата обучения + уведомления (Telegram-бот, SMS, e-mail).
 
-## When This Document Needs Updates
+Что делаем, для кого и какие роли — в **`PRODUCT.md`**. Читай его перед любой задачей.
 
-As you add the following to the project, update this CLAUDE.md accordingly:
-- **Build system**: Add build/compile commands under "Development Commands"
-- **Testing framework**: Add test execution commands and patterns
-- **Linting/formatting**: Include linter setup and commands
-- **Project type identified**: Add "High-Level Architecture" section once the main purpose is clear
-- **Dependencies** (package.json, go.mod, requirements.txt, etc.): Note any critical setup steps
-- **Multiple modules/services**: Document how they interact
+Общение с владельцем (Umid) — на русском.
+
+## Главные правила
+
+### 1. Это совершенно новый продукт
+Мы **не копируем** старый сайт geniusland.uz. Архитектура, схема БД, код, тексты интерфейса и дизайн создаются заново. Старая система во многом не доделана и содержит ошибки (особенно финансы — см. `Legacy Website Audit/H_technical_observations.md`).
+
+### 2. Legacy — только справочник, и всё из него подтверждается
+Папка `Legacy Website Audit/` — аудит старого сайта: функции, бизнес-правила (`D_business_rules.md`, ID вида `BR-xxx`), роли и права, найденные ошибки, открытые вопросы.
+
+- Её можно использовать, чтобы находить идеи, бизнес-правила, ограничения и функции.
+- **Каждый раз, когда берёшь что-то из legacy (правило, ограничение, формулу, функцию, статус, поле, идею), сначала спроси Umid, можно ли применить это в новом проекте.** Не внедряй до явного «да».
+- В вопросе указывай источник (файл и ID, например `D_business_rules.md BR-023`), суть в одной строке и что предлагаешь — как есть, изменить или не брать.
+- Подтверждённые и отклонённые решения записывай в `docs/legacy-decisions.md`, чтобы не спрашивать повторно.
+- Если правило из legacy противоречит `PRODUCT.md` или словам Umid — приоритет у `PRODUCT.md` и Umid.
+
+### 3. Не додумывай открытые решения
+Список открытых решений — в `PRODUCT.md` → «Open decisions». Если задача от них зависит — спроси, а не выбирай молча.
+
+### 4. Ключевые особенности домена (не забывать)
+- **Два филиала, изоляция данных.** У каждой записи, принадлежащей филиалу, есть филиал. Оба филиала видит только основатель (суперадмин — на техническом уровне). Директор, администратор и учитель — только свой филиал.
+- **8–11 классы учатся в группах по направлениям** («ЭКОНОМИКА 1», «МЕДИЦИНА 2», «ФИЛОЛОГИЯ 1»). Расписание, журнал и посещаемость должны работать и для класса, и для группы. 1–7 — обычные классы.
+- **Родители и ученики не имеют веб-страниц.** Только API для будущего приложения и Telegram-бот.
+- **Уведомления: Telegram-бот — основной канал.** Коды входа — во все подключённые каналы. **SMS — редко** (напоминания об оплате и редкие важные сообщения).
+- **Бот показывает расписание только на сегодня и завтра**, всегда из актуальных данных (без кеша, который может устареть).
+- Роли v1: основатель, директор, администратор, учитель, бухгалтер, суперадмин (базово), родитель, ученик. Позже: отдел кадров, завхоз. Права — данные (действие + область видимости), меню и API выводятся из прав.
+- Интерфейс узбекский (латиница) и русский, без захардкоженных строк. Часовой пояс Asia/Tashkent.
+- Не выдумывать реальные данные (имена, оценки, суммы). Плейсхолдеры помечать явно.
+
+## Stack
+
+Next.js (App Router) + TypeScript, PostgreSQL + Prisma, next-intl (uz/ru). Подробнее — `PRODUCT.md` → Stack.
 
 ## Development Commands
 
-_To be added as development tooling is configured_
-
-- **Build**: [Command to build the project]
-- **Run tests**: [Command to run all tests]
-- **Run single test**: [Command to run a single test]
-- **Lint**: [Command to lint the code]
-- **Format**: [Command to format code]
-- **Dev server**: [Command to start development server, if applicable]
-
-## High-Level Architecture
-
-_To be documented once the main codebase structure is established_
+_Будут добавлены после настройки проекта (build, test, lint, format, dev server)._
 
 ## Key Files and Directories
 
-- `.git/` — Git repository metadata
-- `.claude/` — Claude Code configuration
-- `README.md` — Project overview (currently empty)
-
-## Before You Start
-
-1. Update the README.md with a clear project description and purpose
-2. Choose and configure your build/test/lint tooling
-3. Return here and document the commands and architecture
+- `PRODUCT.md` — продукт, школа, роли, уведомления, модули v1, открытые решения.
+- `Legacy Website Audit/` — аудит старой системы (справочник, см. правило 2).
+  - `00_INDEX.md` — оглавление; `D_business_rules.md` — правила; `G_roles_permissions.md` — роли; `H_technical_observations.md` — ошибки старой системы; `K_open_questions.md` — вопросы.
+- `docs/legacy-decisions.md` — решения по правилам из legacy (принято / изменено / отклонено).
+- `src/images/` — изображения.
+- `.claude/skills/`, `.agents/skills/` — скиллы (GSAP, интерфейсы).
