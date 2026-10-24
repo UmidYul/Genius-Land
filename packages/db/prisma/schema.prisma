@@ -1,0 +1,50 @@
+// Genius Land — схема БД.
+// Этап 0: только служебные таблицы. Филиалы и пользователи появятся на этапе 1,
+// тогда branchId / actorId / updatedById получат внешние ключи.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// Настройка: бизнес-правила с цифрами живут здесь, а не в коде.
+/// branchId = NULL — глобальное значение; иначе — значение для филиала (перекрывает глобальное).
+/// Пара (key, branchId) уникальна, NULL считается равным NULL (см. миграцию: NULLS NOT DISTINCT).
+model Setting {
+  id          String   @id @default(uuid()) @db.Uuid
+  key         String   @db.VarChar(120)
+  value       Json
+  branchId    String?  @db.Uuid
+  updatedById String?  @db.Uuid
+  createdAt   DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt   DateTime @updatedAt @db.Timestamptz(3)
+
+  @@unique([key, branchId])
+  @@index([branchId])
+}
+
+/// Журнал действий: кто, что, над чем, было/стало, причина, когда, откуда.
+/// Записи только добавляются — не меняются и не удаляются.
+model AuditLog {
+  id         String   @id @default(uuid()) @db.Uuid
+  /// NULL — действие системы (фоновая задача, миграция).
+  actorId    String?  @db.Uuid
+  action     String   @db.VarChar(120)
+  entityType String   @db.VarChar(80)
+  entityId   String?  @db.VarChar(80)
+  branchId   String?  @db.Uuid
+  before     Json?
+  after      Json?
+  reason     String?
+  ip         String?  @db.VarChar(45)
+  createdAt  DateTime @default(now()) @db.Timestamptz(3)
+
+  @@index([entityType, entityId])
+  @@index([actorId, createdAt])
+  @@index([branchId, createdAt])
+  @@index([createdAt])
+}

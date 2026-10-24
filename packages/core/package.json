@@ -1,0 +1,20 @@
+{
+  "name": "@gl/core",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./money": "./src/money.ts",
+    "./result": "./src/result.ts",
+    "./time": "./src/time.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@gl/db": "workspace:*",
+    "@gl/i18n": "workspace:*",
+    "zod": "^3.25.56"
+  }
+}

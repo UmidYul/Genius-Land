@@ -1,0 +1,47 @@
+{
+  "name": "genius-land",
+  "private": true,
+  "packageManager": "pnpm@9.15.4",
+  "engines": {
+    "node": ">=22.12"
+  },
+  "type": "module",
+  "scripts": {
+    "dev": "pnpm --parallel --no-bail --filter @gl/web --filter @gl/worker dev",
+    "build": "pnpm --filter @gl/web --filter @gl/worker build",
+    "start": "pnpm --filter @gl/web start",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "typecheck": "tsc --noEmit && pnpm -r --parallel typecheck",
+    "test": "vitest run",
+    "test:unit": "vitest run --project unit",
+    "test:int": "vitest run --project integration",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "db:generate": "pnpm --filter @gl/db generate",
+    "db:migrate": "pnpm --filter @gl/db migrate",
+    "db:migrate:dev": "pnpm --filter @gl/db migrate:dev",
+    "db:seed": "pnpm --filter @gl/db seed",
+    "db:studio": "pnpm --filter @gl/db studio"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.28.0",
+    "@gl/i18n": "workspace:*",
+    "@next/eslint-plugin-next": "^15.3.3",
+    "@playwright/test": "^1.53.0",
+    "@types/node": "^22.15.30",
+    "dotenv": "^16.5.0",
+    "eslint": "^9.28.0",
+    "eslint-config-prettier": "^10.1.5",
+    "eslint-plugin-i18next": "^6.1.1",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "globals": "^16.2.0",
+    "prettier": "^3.5.3",
+    "prettier-plugin-tailwindcss": "^0.6.12",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.34.0",
+    "vitest": "^3.2.3"
+  }
+}

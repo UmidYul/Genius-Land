@@ -1,0 +1,13 @@
+pnpm-lock.yaml
+node_modules
+.next
+dist
+coverage
+playwright-report
+test-results
+packages/db/prisma/migrations
+Legacy Website Audit
+*.md
+skills-lock.json
+.claude
+.agents

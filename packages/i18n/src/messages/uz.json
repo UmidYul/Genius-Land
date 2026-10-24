@@ -1,0 +1,99 @@
+{
+  "meta": {
+    "title": "Genius Land",
+    "description": "Genius Land maktabini boshqarish platformasi"
+  },
+  "common": {
+    "appName": "Genius Land",
+    "loading": "Yuklanmoqda…",
+    "close": "Yopish",
+    "cancel": "Bekor qilish",
+    "save": "Saqlash",
+    "confirm": "Tasdiqlash",
+    "skipToContent": "Asosiy qismga oʻtish",
+    "currency": {
+      "sum": "soʻm"
+    }
+  },
+  "nav": {
+    "mainMenu": "Asosiy menyu",
+    "openMenu": "Menyuni ochish",
+    "closeMenu": "Menyuni yopish",
+    "home": "Bosh sahifa",
+    "designSystem": "Dizayn tizimi"
+  },
+  "topbar": {
+    "language": "Til",
+    "theme": "Mavzu",
+    "profile": "Profil",
+    "profilePlaceholder": "Kirish 1-bosqichda qoʻshiladi"
+  },
+  "theme": {
+    "light": "Yorugʻ",
+    "dark": "Qorongʻi",
+    "system": "Tizim"
+  },
+  "locale": {
+    "uz": "Oʻzbekcha",
+    "ru": "Русский"
+  },
+  "home": {
+    "title": "Bosh sahifa",
+    "today": "Bugun: {date}",
+    "emptyTitle": "Bu yerda tez orada maʼlumotlar paydo boʻladi",
+    "emptyText": "Modullar keyingi bosqichlarda qoʻshiladi: kirish va rollar, maktab tuzilmasi, dars jadvali, jurnal, toʻlovlar."
+  },
+  "auth": {
+    "title": "Tizimga kirish",
+    "comingSoon": "Kirish sahifasi 1-bosqichda qoʻshiladi.",
+    "toHome": "Bosh sahifaga"
+  },
+  "designSystem": {
+    "title": "Dizayn tizimi",
+    "subtitle": "Bazaviy komponentlar namunasi. Barcha maʼlumotlar — namuna (haqiqiy emas).",
+    "buttons": "Tugmalar",
+    "primary": "Asosiy",
+    "secondary": "Ikkinchi darajali",
+    "ghost": "Shaffof",
+    "danger": "Xavfli",
+    "disabled": "Faol emas",
+    "loadingButton": "Saqlanmoqda",
+    "fields": "Maydonlar",
+    "nameLabel": "Ism (namuna)",
+    "namePlaceholder": "Masalan: Namuna Namunayev",
+    "nameHint": "Bu maydon hech narsani saqlamaydi",
+    "amountLabel": "Summa (namuna)",
+    "amountError": "Summa manfiy boʻlishi mumkin emas",
+    "selectLabel": "Filial (namuna)",
+    "selectPlaceholder": "Tanlang",
+    "selectOptionA": "Namuna filial A",
+    "selectOptionB": "Namuna filial B",
+    "table": "Jadval",
+    "colName": "Nomi",
+    "colDate": "Sana",
+    "colAmount": "Summa",
+    "rowSample": "Namuna qator {n}",
+    "feedback": "Bildirishnomalar va oynalar",
+    "openDialog": "Oynani ochish",
+    "dialogTitle": "Namuna oyna",
+    "dialogText": "Bu oyna hech qanday amal bajarmaydi.",
+    "showToast": "Bildirishnoma koʻrsatish",
+    "toastText": "Namuna bildirishnoma",
+    "skeleton": "Yuklanish holati",
+    "empty": "Boʻsh holat",
+    "emptyTitle": "Hozircha hech narsa yoʻq",
+    "emptyText": "Maʼlumotlar qoʻshilganda shu yerda koʻrinadi."
+  },
+  "errors": {
+    "INTERNAL": "Kutilmagan xatolik. Keyinroq qayta urinib koʻring.",
+    "VALIDATION": "Maʼlumotlar notoʻgʻri kiritilgan.",
+    "NOT_FOUND": "Topilmadi.",
+    "FORBIDDEN": "Bu amal uchun ruxsat yoʻq.",
+    "UNAUTHENTICATED": "Tizimga kiring.",
+    "CONFLICT": "Maʼlumotlar boshqa amal bilan ziddiyatda.",
+    "SETTING_UNKNOWN": "Nomaʼlum sozlama: {key}.",
+    "SETTING_INVALID": "Sozlama qiymati notoʻgʻri: {key}.",
+    "MONEY_INVALID": "Summa notoʻgʻri.",
+    "MONEY_NEGATIVE": "Summa manfiy boʻlishi mumkin emas."
+  }
+}
