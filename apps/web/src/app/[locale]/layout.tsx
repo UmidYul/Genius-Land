@@ -6,6 +6,7 @@ import { Manrope, Sora } from 'next/font/google';
 import { notFound } from 'next/navigation';
 import type { ReactNode } from 'react';
 import { Providers } from '@/components/providers';
+import { ThemeSync } from '@/components/theme-sync';
 import { routing } from '@/i18n/routing';
 import { themeInitScript } from '@/lib/theme';
 import '../globals.css';
@@ -69,6 +70,7 @@ export default async function LocaleLayout({
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
       <body className="bg-bg text-fg min-h-dvh font-sans">
+        <ThemeSync />
         <NextIntlClientProvider>
           <Providers>{children}</Providers>
         </NextIntlClientProvider>

@@ -4,53 +4,23 @@ import { cn } from '@gl/ui';
 import { Monitor, Moon, Sun } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
-import { THEME_STORAGE_KEY, themePreferences, type ThemePreference } from '@/lib/theme';
+import { themePreferences, type ThemePreference } from '@/lib/theme';
+import { applyTheme, readThemePreference, saveThemePreference } from '@/lib/theme-client';
 
 const icons = { light: Sun, dark: Moon, system: Monitor } as const;
 
-function readPreference(): ThemePreference {
-  try {
-    const stored = localStorage.getItem(THEME_STORAGE_KEY);
-    return themePreferences.includes(stored as ThemePreference)
-      ? (stored as ThemePreference)
-      : 'system';
-  } catch {
-    return 'system';
-  }
-}
-
-const systemQuery = () => window.matchMedia('(prefers-color-scheme: dark)');
-
-function apply(preference: ThemePreference) {
-  const dark = preference === 'dark' || (preference === 'system' && systemQuery().matches);
-  document.documentElement.dataset.theme = dark ? 'dark' : 'light';
-}
-
-/** Light / dark / system. The choice is kept in this browser (localStorage). */
+/** Light / dark / system. The choice is kept in this browser (localStorage); see ThemeSync. */
 export function ThemeSwitcher() {
   const t = useTranslations('theme');
   const tTopbar = useTranslations('topbar');
   const [preference, setPreference] = useState<ThemePreference>('system');
 
-  useEffect(() => setPreference(readPreference()), []);
-
-  // In "system" mode follow OS changes live.
-  useEffect(() => {
-    if (preference !== 'system') return;
-    const query = systemQuery();
-    const onChange = () => apply('system');
-    query.addEventListener('change', onChange);
-    return () => query.removeEventListener('change', onChange);
-  }, [preference]);
+  useEffect(() => setPreference(readThemePreference()), []);
 
   const choose = (next: ThemePreference) => {
     setPreference(next);
-    try {
-      localStorage.setItem(THEME_STORAGE_KEY, next);
-    } catch {
-      // Private mode: the choice lasts for this page only.
-    }
-    apply(next);
+    saveThemePreference(next);
+    applyTheme(next);
   };
 
   return (

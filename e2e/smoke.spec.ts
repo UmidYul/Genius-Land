@@ -31,3 +31,12 @@ test('language switch keeps the page', async ({ page }) => {
   await expect(page).toHaveURL(/\/ru$/);
   await expect(page.getByRole('heading', { level: 1, name: messages.ru.home.title })).toBeVisible();
 });
+
+test('theme survives a language switch', async ({ page }) => {
+  await page.addInitScript(() => localStorage.setItem('gl-theme', 'dark'));
+  await page.goto('/uz');
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  await page.getByRole('button', { name: messages.uz.locale.ru }).click();
+  await expect(page).toHaveURL(/\/ru$/);
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+});
