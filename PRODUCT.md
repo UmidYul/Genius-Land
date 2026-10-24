@@ -120,8 +120,8 @@ Open decisions (do not assume — ask Umid):
 - Name: **Genius Land**.
 - Domain: **geniusland.uz** moves from the old site to this platform.
 - **Colors**: taken from the current geniusland.uz — green brand `#0EA17B`, light and dark themes. Full token list: `docs/BRAND.md`.
-- Fonts: pending confirmation (old site uses Sora + Manrope).
-- A Genius Land logo exists and must be used. Files are not yet in the repository; add them to `src/images/brand/` when provided.
+- **Fonts**: Sora (headings) and Manrope (body), confirmed.
+- **Logo**: `src/images/brand/logo-genius-land.jpg`. Must be used.
 
 ## Evidence on Hand
 
