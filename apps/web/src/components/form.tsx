@@ -2,12 +2,56 @@
 
 import { Button, cn, type ButtonProps } from '@gl/ui';
 import { CircleAlert, CircleCheck } from 'lucide-react';
-import type { ReactNode } from 'react';
+import {
+  createContext,
+  startTransition,
+  useContext,
+  type FormHTMLAttributes,
+  type ReactNode,
+} from 'react';
 import { useFormStatus } from 'react-dom';
 
+const PendingContext = createContext<boolean | null>(null);
+
+/**
+ * A form that submits to a `useActionState` dispatch WITHOUT React's automatic reset.
+ * With `<form action>` React 19 clears the fields after every submission, so a validation
+ * error would wipe what the user typed. Here the fields keep their values; on success the
+ * component decides what to do (close a dialog, navigate, show a message).
+ */
+export function Form({
+  action,
+  pending,
+  children,
+  ...props
+}: Omit<FormHTMLAttributes<HTMLFormElement>, 'action' | 'onSubmit'> & {
+  action: (data: FormData) => void;
+  pending: boolean;
+}) {
+  return (
+    <PendingContext.Provider value={pending}>
+      <form
+        {...props}
+        onSubmit={(event) => {
+          event.preventDefault();
+          const data = new FormData(event.currentTarget);
+          startTransition(() => action(data));
+        }}
+      >
+        {children}
+      </form>
+    </PendingContext.Provider>
+  );
+}
+
 /** Submit button that shows progress while its form's server action runs. */
-export function SubmitButton(props: Omit<ButtonProps, 'type' | 'loading'>) {
-  const { pending } = useFormStatus();
+export function SubmitButton({
+  pending: pendingProp,
+  ...props
+}: Omit<ButtonProps, 'type' | 'loading'> & { pending?: boolean }) {
+  const status = useFormStatus();
+  const fromForm = useContext(PendingContext);
+  const pending = pendingProp ?? fromForm ?? status.pending;
   return <Button type="submit" loading={pending} disabled={pending || props.disabled} {...props} />;
 }
 

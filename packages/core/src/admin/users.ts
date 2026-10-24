@@ -7,6 +7,7 @@ import { generateTemporaryPassword, hashPassword } from '../auth/password';
 import { normalizeEmail, normalizePhone } from '../auth/phone';
 import { revokeOtherSessions } from '../auth/sessions';
 import { auditActor, type ServiceContext } from '../context';
+import { linkStaffToUser } from '../people/staff';
 import { err, ok, type ErrorCode, type Result } from '../result';
 
 export interface AssignmentInput {
@@ -230,6 +231,8 @@ export async function createUser(
       },
     });
     await writeAssignments(tx, ctx, created.id, assignments.value);
+    // Staff records with this phone (created by a director or by import) get the account.
+    await linkStaffToUser(tx, { id: created.id, phone });
     await writeAudit(tx, auditActor(ctx), {
       action: 'admin.user.create',
       entityType: 'User',

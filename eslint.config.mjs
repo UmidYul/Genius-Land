@@ -73,6 +73,7 @@ export default tseslint.config(
               '^cn$',
               '^can(Any)?$',
               '^command$',
+              '^render[A-Z]\\w*$',
             ],
           },
           // Allow only text without letters: digits, punctuation, symbols such as "*".

@@ -3,14 +3,14 @@
 import { Button, Card, Input } from '@gl/ui';
 import { useTranslations } from 'next-intl';
 import { useActionState, useState, useTransition } from 'react';
-import { FormAlert, SubmitButton } from '@/components/form';
+import { FormAlert, SubmitButton, Form } from '@/components/form';
 import { Link } from '@/i18n/navigation';
 import type { FormState } from '@/lib/action-result';
 import { resendCodeAction, resetPasswordAction } from '../../actions';
 
 export function ResetForm() {
   const t = useTranslations('auth');
-  const [state, action] = useActionState(resetPasswordAction, {});
+  const [state, action, actionPending] = useActionState(resetPasswordAction, {});
   const [resendState, setResendState] = useState<FormState>({});
   const [resending, startResend] = useTransition();
   const shown = resendState.error || resendState.message ? resendState : state;
@@ -23,10 +23,11 @@ export function ResetForm() {
       </div>
       <FormAlert tone="error">{shown.error}</FormAlert>
       <FormAlert tone="success">{shown.message}</FormAlert>
-      <form
-        action={(form) => {
+      <Form
+        pending={actionPending}
+        action={(data) => {
           setResendState({});
-          action(form);
+          action(data);
         }}
         className="flex flex-col gap-4"
       >
@@ -62,7 +63,7 @@ export function ResetForm() {
           required
         />
         <SubmitButton className="w-full">{t('savePassword')}</SubmitButton>
-      </form>
+      </Form>
       <div className="flex flex-wrap items-center justify-between gap-2">
         <Link
           href="/login"

@@ -3,7 +3,7 @@
 import { Input } from '@gl/ui';
 import { useTranslations } from 'next-intl';
 import { useActionState } from 'react';
-import { FormAlert, SubmitButton } from '@/components/form';
+import { FormAlert, SubmitButton, Form } from '@/components/form';
 import { changeSettingAction } from './actions';
 
 export function SettingRow({
@@ -23,7 +23,7 @@ export function SettingRow({
 }) {
   const t = useTranslations('admin.settings');
   const tCommon = useTranslations('common');
-  const [state, action] = useActionState(changeSettingAction, {});
+  const [state, action, actionPending] = useActionState(changeSettingAction, {});
   const id = `setting-${settingKey.replace(/\W/g, '-')}`;
 
   return (
@@ -37,7 +37,11 @@ export function SettingRow({
         </p>
       </div>
       {canManage ? (
-        <form action={action} className="flex flex-col gap-3 sm:flex-row sm:items-end">
+        <Form
+          action={action}
+          pending={actionPending}
+          className="flex flex-col gap-3 sm:flex-row sm:items-end"
+        >
           <input type="hidden" name="key" value={settingKey} />
           <Input
             id={id}
@@ -57,7 +61,7 @@ export function SettingRow({
             containerClassName="flex-1"
           />
           <SubmitButton variant="secondary">{tCommon('save')}</SubmitButton>
-        </form>
+        </Form>
       ) : (
         <p className="text-lg font-semibold tabular-nums">{value}</p>
       )}

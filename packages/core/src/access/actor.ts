@@ -1,5 +1,6 @@
 import type { Db } from '@gl/db';
 import { isPermissionCode, type PermissionCode, type PermissionScope } from './permissions';
+import { dbScopeRelationsProvider } from './relations';
 import { isRoleCode, type RoleCode } from './roles';
 
 /** One grant of a permission: its scope and the branches of the role assignment it came from. */
@@ -40,7 +41,7 @@ export const emptyScopeRelations: ScopeRelations = {
   selfStudentId: null,
 };
 
-/** Placeholder until stages 2 (classes, students, guardians) and 4 (teaching assignments). */
+/** No relations at all — for tests and for actors that need none. */
 export const emptyScopeRelationsProvider: ScopeRelationsProvider = {
   load: async () => emptyScopeRelations,
 };
@@ -75,7 +76,7 @@ export interface Actor {
 export async function loadActor(
   db: Db,
   userId: string,
-  relations: ScopeRelationsProvider = emptyScopeRelationsProvider,
+  relations: ScopeRelationsProvider = dbScopeRelationsProvider,
 ): Promise<Actor | null> {
   const user = await db.user.findUnique({
     where: { id: userId },

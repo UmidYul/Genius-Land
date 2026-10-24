@@ -11,6 +11,8 @@ const config: NextConfig = {
   serverExternalPackages: ['@prisma/client', '@node-rs/argon2'],
   // Lint runs once for the whole monorepo (`pnpm lint`), not again inside `next build`.
   eslint: { ignoreDuringBuilds: true },
+  // Excel imports are uploaded through a server action (files up to 5 MB).
+  experimental: { serverActions: { bodySizeLimit: '6mb' } },
 };
 
 export default withNextIntl(config);

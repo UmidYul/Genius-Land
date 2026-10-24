@@ -103,6 +103,23 @@ export const demoUsers: DemoUser[] = [
   },
 ];
 
+/** Directions named in PRODUCT.md. The list is editable in the interface. */
+export const seedDirections = [
+  { nameRu: 'Экономика', nameUz: 'Iqtisodiyot' },
+  { nameRu: 'Медицина', nameUz: 'Tibbiyot' },
+  { nameRu: 'Филология', nameUz: 'Filologiya' },
+];
+
+export async function seedCatalog(db: PrismaClient) {
+  for (const direction of seedDirections) {
+    await db.direction.upsert({
+      where: { nameRu: direction.nameRu },
+      create: direction,
+      update: {},
+    });
+  }
+}
+
 export async function seedBranchesAndAccess(db: PrismaClient) {
   await syncAccessModel(db);
   for (const branch of seedBranches) {

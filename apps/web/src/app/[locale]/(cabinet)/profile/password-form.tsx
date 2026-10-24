@@ -3,17 +3,17 @@
 import { Card, Input } from '@gl/ui';
 import { useTranslations } from 'next-intl';
 import { useActionState } from 'react';
-import { FormAlert, SubmitButton } from '@/components/form';
+import { FormAlert, SubmitButton, Form } from '@/components/form';
 import { changePasswordAction } from './actions';
 
 export function PasswordForm() {
   const t = useTranslations('profile');
   const tAuth = useTranslations('auth');
-  const [state, action] = useActionState(changePasswordAction, {});
+  const [state, action, actionPending] = useActionState(changePasswordAction, {});
 
   return (
     <Card>
-      <form action={action} className="flex flex-col gap-4">
+      <Form action={action} pending={actionPending} className="flex flex-col gap-4">
         <FormAlert tone="error">{state.fields ? null : state.error}</FormAlert>
         <FormAlert tone="success">{state.message}</FormAlert>
         <Input
@@ -45,7 +45,7 @@ export function PasswordForm() {
           required
         />
         <SubmitButton className="self-start">{tAuth('savePassword')}</SubmitButton>
-      </form>
+      </Form>
     </Card>
   );
 }

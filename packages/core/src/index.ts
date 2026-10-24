@@ -33,3 +33,18 @@ export * from './admin/users';
 
 export * from './approvals/service';
 export * from './profile/service';
+
+export * from './access/relations';
+export * from './school/branch-target';
+export * from './school/calendar';
+export * from './school/catalog';
+export * from './school/classes';
+export * from './school/dates';
+export * from './school/years';
+export * from './school/excel/columns';
+export * from './school/excel/exports';
+export * from './school/excel/import';
+export * from './school/excel/workbook';
+export * from './people/guardians';
+export * from './people/staff';
+export * from './people/students';

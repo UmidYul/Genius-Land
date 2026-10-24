@@ -82,11 +82,18 @@ model Branch {
   createdAt DateTime @default(now()) @db.Timestamptz(3)
   updatedAt DateTime @updatedAt @db.Timestamptz(3)
 
-  assignmentBranches RoleAssignmentBranch[]
-  preferredBy        User[]                 @relation("PreferredBranch")
-  settings           Setting[]
-  auditLogs          AuditLog[]
-  approvalRequests   ApprovalRequest[]
+  assignmentBranches  RoleAssignmentBranch[]
+  preferredBy         User[]                 @relation("PreferredBranch")
+  settings            Setting[]
+  auditLogs           AuditLog[]
+  approvalRequests    ApprovalRequest[]
+  academicYears       AcademicYear[]
+  calendarDays        CalendarDay[]
+  classes             Class[]
+  staff               Staff[]
+  students            Student[]
+  teachingAssignments TeachingAssignment[]
+  importJobs          ImportJob[]
 }
 
 // ─── Люди и доступ ───────────────────────────────────────────────────────────
@@ -125,17 +132,22 @@ model User {
   createdAt          DateTime   @default(now()) @db.Timestamptz(3)
   updatedAt          DateTime   @updatedAt @db.Timestamptz(3)
 
-  preferredBranch     Branch?               @relation("PreferredBranch", fields: [preferredBranchId], references: [id], onDelete: SetNull)
-  roleAssignments     RoleAssignment[]      @relation("AssignmentUser")
-  grantedAssignments  RoleAssignment[]      @relation("AssignmentGrantedBy")
-  sessions            Session[]
-  trustedDevices      TrustedDevice[]
-  otpCodes            OtpCode[]
-  channels            NotificationChannel[]
-  auditLogs           AuditLog[]            @relation("AuditActor")
-  updatedSettings     Setting[]             @relation("SettingUpdatedBy")
-  requestedApprovals  ApprovalRequest[]     @relation("ApprovalRequestedBy")
-  decidedApprovals    ApprovalRequest[]     @relation("ApprovalDecidedBy")
+  preferredBranch    Branch?               @relation("PreferredBranch", fields: [preferredBranchId], references: [id], onDelete: SetNull)
+  roleAssignments    RoleAssignment[]      @relation("AssignmentUser")
+  grantedAssignments RoleAssignment[]      @relation("AssignmentGrantedBy")
+  sessions           Session[]
+  trustedDevices     TrustedDevice[]
+  otpCodes           OtpCode[]
+  channels           NotificationChannel[]
+  auditLogs          AuditLog[]            @relation("AuditActor")
+  updatedSettings    Setting[]             @relation("SettingUpdatedBy")
+  requestedApprovals ApprovalRequest[]     @relation("ApprovalRequestedBy")
+  decidedApprovals   ApprovalRequest[]     @relation("ApprovalDecidedBy")
+  staffProfiles      Staff[]
+  studentProfile     Student?              @relation("StudentAccount")
+  guardianLinks      GuardianLink[]
+  studentHistory     StudentHistory[]
+  importJobs         ImportJob[]
 
   @@index([status])
 }
@@ -349,4 +361,303 @@ model ApprovalRequest {
 
   @@index([status, approverRoleCode, branchId])
   @@index([requestedById])
+}
+
+// ─── Учебная структура (этап 2) ──────────────────────────────────────────────
+
+/// Учебный год филиала. Создаётся сразу с четвертями. Текущий год у филиала один
+/// (частичный уникальный индекс в миграции).
+model AcademicYear {
+  id        String   @id @default(uuid()) @db.Uuid
+  branchId  String   @db.Uuid
+  /// Например «2026–2027».
+  name      String   @db.VarChar(40)
+  startDate DateTime @db.Date
+  endDate   DateTime @db.Date
+  isCurrent Boolean  @default(false)
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+
+  branch  Branch  @relation(fields: [branchId], references: [id], onDelete: Restrict)
+  terms   Term[]
+  classes Class[]
+
+  @@unique([branchId, name])
+}
+
+/// Четверть. Каникулы — промежутки между четвертями.
+model Term {
+  id             String   @id @default(uuid()) @db.Uuid
+  academicYearId String   @db.Uuid
+  /// 1–4
+  number         Int
+  startDate      DateTime @db.Date
+  endDate        DateTime @db.Date
+
+  academicYear AcademicYear @relation(fields: [academicYearId], references: [id], onDelete: Cascade)
+
+  @@unique([academicYearId, number])
+}
+
+enum CalendarDayKind {
+  /// Праздник или выходной в обычно рабочий день.
+  HOLIDAY
+  /// Рабочий день в обычно выходной (перенос).
+  WORKDAY
+}
+
+enum ClassType {
+  /// 1–7 классы: учатся пн–пт.
+  REGULAR
+  /// Группы по направлениям 8–11: пн–сб (суббота до обеда).
+  DIRECTION_GROUP
+}
+
+/// Исключение из обычной учебной недели. branchId = NULL — для обоих филиалов.
+/// classType = NULL — для всех классов, иначе только для классов этого типа.
+model CalendarDay {
+  id        String          @id @default(uuid()) @db.Uuid
+  branchId  String?         @db.Uuid
+  date      DateTime        @db.Date
+  kind      CalendarDayKind
+  classType ClassType?
+  note      String?         @db.VarChar(200)
+  createdAt DateTime        @default(now()) @db.Timestamptz(3)
+
+  branch Branch? @relation(fields: [branchId], references: [id], onDelete: Restrict)
+
+  @@unique([branchId, date, classType])
+  @@index([date])
+}
+
+/// Предмет — общий справочник школы.
+model Subject {
+  id         String    @id @default(uuid()) @db.Uuid
+  nameUz     String    @db.VarChar(120)
+  nameRu     String    @db.VarChar(120)
+  archivedAt DateTime? @db.Timestamptz(3)
+  createdAt  DateTime  @default(now()) @db.Timestamptz(3)
+  updatedAt  DateTime  @updatedAt @db.Timestamptz(3)
+
+  teachingAssignments TeachingAssignment[]
+
+  @@unique([nameRu])
+}
+
+/// Направление групп 8–11 (Экономика, Медицина, Филология…) — редактируемый справочник.
+model Direction {
+  id         String    @id @default(uuid()) @db.Uuid
+  nameUz     String    @db.VarChar(120)
+  nameRu     String    @db.VarChar(120)
+  archivedAt DateTime? @db.Timestamptz(3)
+  createdAt  DateTime  @default(now()) @db.Timestamptz(3)
+  updatedAt  DateTime  @updatedAt @db.Timestamptz(3)
+
+  classes Class[]
+
+  @@unique([nameRu])
+}
+
+/// Единая учебная единица: класс 1–7 или группа по направлению 8–11.
+model Class {
+  id                String    @id @default(uuid()) @db.Uuid
+  branchId          String    @db.Uuid
+  academicYearId    String    @db.Uuid
+  type              ClassType
+  /// «5-А» или «ЭКОНОМИКА 1».
+  name              String    @db.VarChar(60)
+  /// Нормализованное название для уникальности (верхний регистр, без лишних пробелов).
+  nameKey           String    @db.VarChar(60)
+  /// 1–7 для REGULAR; NULL для групп (ученики в них — 8–11 класс).
+  gradeLevel        Int?
+  directionId       String?   @db.Uuid
+  /// Задаётся явно; больше учеников не добавить.
+  capacity          Int
+  homeroomTeacherId String    @db.Uuid
+  archivedAt        DateTime? @db.Timestamptz(3)
+  createdAt         DateTime  @default(now()) @db.Timestamptz(3)
+  updatedAt         DateTime  @updatedAt @db.Timestamptz(3)
+
+  branch              Branch               @relation(fields: [branchId], references: [id], onDelete: Restrict)
+  academicYear        AcademicYear         @relation(fields: [academicYearId], references: [id], onDelete: Restrict)
+  direction           Direction?           @relation(fields: [directionId], references: [id], onDelete: Restrict)
+  homeroomTeacher     Staff                @relation("Homeroom", fields: [homeroomTeacherId], references: [id], onDelete: Restrict)
+  students            Student[]
+  teachingAssignments TeachingAssignment[]
+
+  @@unique([branchId, academicYearId, nameKey])
+  @@index([branchId, academicYearId])
+}
+
+// ─── Люди (этап 2) ───────────────────────────────────────────────────────────
+
+/// Сотрудник филиала. Связь с учётной записью — по userId (вход, области ASSIGNED/HOMEROOM).
+model Staff {
+  id         String    @id @default(uuid()) @db.Uuid
+  branchId   String    @db.Uuid
+  userId     String?   @db.Uuid
+  fullName   String    @db.VarChar(160)
+  phone      String    @db.VarChar(13)
+  position   String    @db.VarChar(120)
+  archivedAt DateTime? @db.Timestamptz(3)
+  createdAt  DateTime  @default(now()) @db.Timestamptz(3)
+  updatedAt  DateTime  @updatedAt @db.Timestamptz(3)
+
+  branch              Branch               @relation(fields: [branchId], references: [id], onDelete: Restrict)
+  user                User?                @relation(fields: [userId], references: [id], onDelete: SetNull)
+  homeroomClasses     Class[]              @relation("Homeroom")
+  teachingAssignments TeachingAssignment[]
+
+  @@unique([branchId, phone])
+  @@unique([branchId, userId])
+  @@index([userId])
+}
+
+/// Учитель × класс × предмет.
+model TeachingAssignment {
+  id        String   @id @default(uuid()) @db.Uuid
+  /// Филиал класса (дублируется для фильтра по филиалу).
+  branchId  String   @db.Uuid
+  staffId   String   @db.Uuid
+  classId   String   @db.Uuid
+  subjectId String   @db.Uuid
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+
+  branch  Branch  @relation(fields: [branchId], references: [id], onDelete: Restrict)
+  staff   Staff   @relation(fields: [staffId], references: [id], onDelete: Cascade)
+  class   Class   @relation(fields: [classId], references: [id], onDelete: Cascade)
+  subject Subject @relation(fields: [subjectId], references: [id], onDelete: Restrict)
+
+  @@unique([classId, subjectId, staffId])
+  @@index([staffId])
+}
+
+enum Gender {
+  MALE
+  FEMALE
+}
+
+enum StudentStatus {
+  ACTIVE
+  /// Выбыл из школы.
+  LEFT
+  /// Окончил школу.
+  GRADUATED
+  /// Переведён в другую школу или филиал.
+  TRANSFERRED
+}
+
+/// Ученик. Номер GL-XXXXXX — сквозной по школе (последовательность в БД).
+model Student {
+  id                    String        @id @default(uuid()) @db.Uuid
+  number                String        @unique @default(dbgenerated("('GL-'::text || lpad((nextval('student_number_seq'::regclass))::text, 6, '0'::text))")) @db.VarChar(12)
+  branchId              String        @db.Uuid
+  classId               String?       @db.Uuid
+  /// Номер класса 1–11. Для групп 8–11 — только атрибут для отображения и отчётов.
+  gradeLevel            Int
+  lastName              String        @db.VarChar(80)
+  firstName             String        @db.VarChar(80)
+  middleName            String?       @db.VarChar(80)
+  birthDate             DateTime      @db.Date
+  gender                Gender
+  status                StudentStatus @default(ACTIVE)
+  emergencyContactName  String?       @db.VarChar(160)
+  emergencyContactPhone String?       @db.VarChar(13)
+  /// Учётная запись ученика (бот / приложение), если создана.
+  userId                String?       @unique @db.Uuid
+  createdAt             DateTime      @default(now()) @db.Timestamptz(3)
+  updatedAt             DateTime      @updatedAt @db.Timestamptz(3)
+
+  branch    Branch           @relation(fields: [branchId], references: [id], onDelete: Restrict)
+  class     Class?           @relation(fields: [classId], references: [id], onDelete: Restrict)
+  user      User?            @relation("StudentAccount", fields: [userId], references: [id], onDelete: SetNull)
+  guardians GuardianLink[]
+  history   StudentHistory[]
+
+  @@index([branchId, classId, status])
+  @@index([lastName, firstName, birthDate])
+}
+
+enum GuardianRelation {
+  MOTHER
+  FATHER
+  GUARDIAN
+  OTHER
+}
+
+/// Родитель/опекун (пользователь с ролью «Родитель») ↔ ученик.
+model GuardianLink {
+  id         String           @id @default(uuid()) @db.Uuid
+  guardianId String           @db.Uuid
+  studentId  String           @db.Uuid
+  relation   GuardianRelation
+  /// Главный контакт ученика — один на ученика (частичный уникальный индекс в миграции).
+  isPrimary  Boolean          @default(false)
+  createdAt  DateTime         @default(now()) @db.Timestamptz(3)
+
+  guardian User    @relation(fields: [guardianId], references: [id], onDelete: Cascade)
+  student  Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@unique([guardianId, studentId])
+  @@index([studentId])
+}
+
+enum StudentEventKind {
+  ENROLLED
+  TRANSFER
+  STATUS
+}
+
+/// История ученика: зачисление, переводы между классами, смена статуса.
+model StudentHistory {
+  id          String           @id @default(uuid()) @db.Uuid
+  studentId   String           @db.Uuid
+  kind        StudentEventKind
+  fromClassId String?          @db.Uuid
+  toClassId   String?          @db.Uuid
+  fromStatus  StudentStatus?
+  toStatus    StudentStatus?
+  /// Дата события в школьном календаре.
+  date        DateTime         @db.Date
+  reason      String?          @db.VarChar(500)
+  actorId     String?          @db.Uuid
+  createdAt   DateTime         @default(now()) @db.Timestamptz(3)
+
+  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  actor   User?   @relation(fields: [actorId], references: [id], onDelete: SetNull)
+
+  @@index([studentId, createdAt])
+}
+
+enum ImportKind {
+  CLASSES
+  STAFF
+  STUDENTS
+  GUARDIANS
+}
+
+enum ImportStatus {
+  PREVIEW
+  DONE
+  CANCELLED
+}
+
+/// Импорт из Excel: разобранные строки ждут подтверждения, после — отчёт.
+model ImportJob {
+  id         String       @id @default(uuid()) @db.Uuid
+  branchId   String       @db.Uuid
+  kind       ImportKind
+  actorId    String       @db.Uuid
+  fileName   String       @db.VarChar(200)
+  status     ImportStatus @default(PREVIEW)
+  /// Строки файла с результатами проверки: [{ row, values, errors }].
+  rows       Json
+  report     Json?
+  createdAt  DateTime     @default(now()) @db.Timestamptz(3)
+  finishedAt DateTime?    @db.Timestamptz(3)
+
+  branch Branch @relation(fields: [branchId], references: [id], onDelete: Restrict)
+  actor  User   @relation(fields: [actorId], references: [id], onDelete: Restrict)
+
+  @@index([branchId, createdAt])
 }

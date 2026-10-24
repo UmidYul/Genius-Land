@@ -32,10 +32,16 @@ function grantCovers(actor: Actor, grant: Grant, resource: AccessResource): bool
       return resource.branchId != null && grant.branchIds.includes(resource.branchId);
     case 'ASSIGNED': {
       if (!resource.classId || !branchAllowed(grant, resource)) return false;
-      return relations.teaching.some(
-        (pair) =>
-          pair.classId === resource.classId &&
-          (resource.subjectId == null || pair.subjectId === resource.subjectId),
+      // Subject-level records (grades, topics): only the pairs the teacher teaches.
+      if (resource.subjectId != null) {
+        return relations.teaching.some(
+          (pair) => pair.classId === resource.classId && pair.subjectId === resource.subjectId,
+        );
+      }
+      // Class-level records (students, timetable): taught classes and the homeroom class.
+      return (
+        relations.teaching.some((pair) => pair.classId === resource.classId) ||
+        relations.homeroomClassIds.includes(resource.classId)
       );
     }
     case 'HOMEROOM':
