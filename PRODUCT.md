@@ -17,7 +17,7 @@ web
 
 ## Stack
 
-Delegated: **Next.js (App Router) + TypeScript, PostgreSQL via Prisma, and next-intl for Uzbek/Russian.** Why: one codebase serves the staff web app now and can expose an API for the parent/student app and the Telegram bot later. Role-based access and server-rendered pages suit a data-heavy internal tool. PostgreSQL fits the relational shape of the data (branches, students, classes, groups, subjects, grades, payments). Hosting target is undecided.
+Delegated: **Next.js (App Router) + TypeScript, PostgreSQL via Prisma, and next-intl for Uzbek/Russian.** Why: one codebase serves the staff web app now and can expose an API for the parent/student app and the Telegram bot later. Role-based access and server-rendered pages suit a data-heavy internal tool. PostgreSQL fits the relational shape of the data (branches, students, classes, groups, subjects, grades, payments). Hosting: temporarily the school PC with Cloudflare Tunnel (`docs/LAUNCH-PC.md`), then a VPS.
 
 ## School
 
@@ -93,6 +93,7 @@ V1 modules:
 5. **Tuition and payments**: contracts, monthly fees, payments, debts.
 6. **Notifications and Telegram bot**: channel routing above, schedule for today/tomorrow.
 7. **Дисциплина — только основа**: модель данных и права закладываются в v1, интерфейс и автоматика — в v2.
+8. **Отзывы учителей друг о друге**: учитель листает карточки коллег (как в приложениях знакомств) и ставит каждому 1–10 или «Не знаю». При оценке ≤ 4 или ≥ 8 обязательно пишет почему, при 5–7 — не пишет. После ответа сразу открывается следующая карточка. Без раундов: неоценённые коллеги всегда на странице, новый учитель сразу появляется у остальных. Оценка — раз в учебный год; директор может запустить всё заново. Ответы полностью анонимны; результаты видят директор своего филиала и основатель, учитель свои не видит.
 
 Подробный план v1, этапы и промты для реализации — `docs/v1/PLAN.md`.
 
@@ -112,7 +113,7 @@ Open decisions (do not assume — ask Umid):
 - Whether attendance is marked per lesson or per day.
 - Fee structure (monthly vs. other periods, discounts, siblings), входят ли питание/автобус/поездки в плату, payment methods, and any integrations (e.g. Click, Payme).
 - Homework, announcements, and messaging: not in v1 scope unless added.
-- SMS provider, hosting/deployment target.
+- SMS provider; VPS provider (temporary hosting decided: school PC).
 - Parent/student app platform and timeline.
 
 ## Brand Commitments
