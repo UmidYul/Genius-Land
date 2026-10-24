@@ -1,0 +1,33 @@
+{
+  "name": "@gl/web",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "dotenv -e ../../.env -- next dev",
+    "build": "dotenv -e ../../.env -- next build",
+    "start": "dotenv -e ../../.env -- next start",
+    "typecheck": "next typegen && tsc --noEmit"
+  },
+  "dependencies": {
+    "@gl/core": "workspace:*",
+    "@gl/db": "workspace:*",
+    "@gl/i18n": "workspace:*",
+    "@gl/ui": "workspace:*",
+    "@node-rs/argon2": "^2.0.2",
+    "@prisma/client": "^6.9.0",
+    "lucide-react": "^0.513.0",
+    "next": "^15.3.3",
+    "next-intl": "^4.1.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "server-only": "^0.0.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.8",
+    "@types/react": "^19.1.6",
+    "@types/react-dom": "^19.1.6",
+    "dotenv-cli": "^8.0.0",
+    "tailwindcss": "^4.1.8"
+  }
+}

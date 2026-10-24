@@ -61,7 +61,9 @@
 - **Sora** — заголовки (`--font-head`).
 - **Manrope** — основной текст (`--font-body`).
 
-Оба поддерживают латиницу и кириллицу. Подтверждено Umid (см. `docs/legacy-decisions.md` #18). Резервный шрифт: `system-ui, -apple-system, "Segoe UI", sans-serif`.
+Подтверждено Umid (см. `docs/legacy-decisions.md` #18). Резервный шрифт: `system-ui, -apple-system, "Segoe UI", sans-serif`.
+
+**Важно:** у Sora нет кириллицы (только латиница), у Manrope — есть. Поэтому в стеке заголовков Manrope стоит сразу после Sora: узбекские (латиница) заголовки рисуются Sora, русские — Manrope.
 
 ## Логотип
 

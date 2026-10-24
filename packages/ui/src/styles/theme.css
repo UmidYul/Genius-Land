@@ -1,0 +1,148 @@
+/*
+ * Tailwind v4 theme for Genius Land. Import after `tailwindcss`:
+ *   @import 'tailwindcss';
+ *   @import '@gl/ui/theme.css';
+ * Stock Tailwind colours are switched off: only brand tokens exist as utilities.
+ */
+@import './tokens.css';
+
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+
+@theme inline {
+  --color-*: initial;
+
+  --color-bg: var(--gl-bg);
+  --color-surface: var(--gl-surface);
+  --color-surface-2: var(--gl-surface-2);
+  --color-surface-3: var(--gl-surface-3);
+  --color-surface-sunk: var(--gl-surface-sunk);
+  --color-border: var(--gl-border);
+  --color-border-soft: var(--gl-border-soft);
+  --color-border-strong: var(--gl-border-strong);
+  --color-fg: var(--gl-fg);
+  --color-fg-muted: var(--gl-fg-muted);
+
+  --color-primary: var(--gl-primary);
+  --color-primary-solid: var(--gl-primary-solid);
+  --color-primary-hover: var(--gl-primary-hover);
+  --color-primary-active: var(--gl-primary-active);
+  --color-primary-deep: var(--gl-primary-deep);
+  --color-primary-soft: var(--gl-primary-soft);
+  --color-primary-soft-fg: var(--gl-primary-soft-fg);
+  --color-primary-border: var(--gl-primary-border);
+  --color-on-solid: var(--gl-on-solid);
+  --color-focus: var(--gl-focus);
+
+  --color-success: var(--gl-success);
+  --color-success-soft: var(--gl-success-soft);
+  --color-success-fg: var(--gl-success-fg);
+  --color-warning: var(--gl-warning);
+  --color-warning-soft: var(--gl-warning-soft);
+  --color-warning-fg: var(--gl-warning-fg);
+  --color-danger: var(--gl-danger);
+  --color-danger-soft: var(--gl-danger-soft);
+  --color-danger-fg: var(--gl-danger-fg);
+  --color-danger-solid: var(--gl-danger-solid);
+  --color-info: var(--gl-info);
+  --color-info-soft: var(--gl-info-soft);
+  --color-info-fg: var(--gl-info-fg);
+  --color-info-solid: var(--gl-info-solid);
+
+  --color-overlay: var(--gl-overlay);
+
+  --color-chart-1: var(--gl-chart-1);
+  --color-chart-2: var(--gl-chart-2);
+  --color-chart-3: var(--gl-chart-3);
+  --color-chart-4: var(--gl-chart-4);
+  --color-chart-5: var(--gl-chart-5);
+  --color-chart-6: var(--gl-chart-6);
+
+  /*
+   * Sora has no Cyrillic glyphs, so Manrope follows it in the heading stack:
+   * Latin (Uzbek) headings render in Sora, Russian headings fall back to Manrope per glyph.
+   */
+  --font-head:
+    var(--font-sora), var(--font-manrope), system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-sans: var(--font-manrope), system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --shadow-sm: var(--gl-shadow-sm);
+  --shadow-md: var(--gl-shadow-md);
+  --shadow-lg: var(--gl-shadow-lg);
+
+  --ease-out-soft: cubic-bezier(0.2, 0, 0, 1);
+
+  --animate-gl-fade-in: gl-fade-in 160ms var(--ease-out-soft);
+  --animate-gl-pop-in: gl-pop-in 180ms var(--ease-out-soft);
+  --animate-gl-slide-in: gl-slide-in 200ms var(--ease-out-soft);
+  --animate-gl-pulse: gl-pulse 1.6s ease-in-out infinite;
+
+  @keyframes gl-fade-in {
+    from {
+      opacity: 0;
+    }
+  }
+  @keyframes gl-pop-in {
+    from {
+      opacity: 0;
+      transform: translateY(8px) scale(0.98);
+    }
+  }
+  @keyframes gl-slide-in {
+    from {
+      transform: translateX(-100%);
+    }
+  }
+  @keyframes gl-pulse {
+    50% {
+      opacity: 0.5;
+    }
+  }
+}
+
+@layer base {
+  html {
+    background-color: var(--color-bg);
+    color: var(--color-fg);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-head);
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-focus);
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background-color: var(--color-primary-soft);
+    color: var(--color-primary-soft-fg);
+  }
+
+  img {
+    outline: 1px solid var(--gl-image-outline);
+    outline-offset: -1px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    ::before,
+    ::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}

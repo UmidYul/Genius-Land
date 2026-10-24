@@ -1,0 +1,5 @@
+@import 'tailwindcss';
+@import '@gl/ui/theme.css';
+
+/* Class names used by the design system live in the ui package. */
+@source '../../../../packages/ui/src';

@@ -42,11 +42,48 @@ Guidance for Claude when working in this repository.
 
 ## Stack
 
-Next.js (App Router) + TypeScript, PostgreSQL + Prisma, next-intl (uz/ru). Подробнее — `PRODUCT.md` → Stack.
+Next.js 15 (App Router) + TypeScript strict, PostgreSQL 16 + Prisma 6, next-intl 4 (uz/ru), Tailwind CSS 4, pg-boss 10, Vitest, Playwright. pnpm 9 монорепо, Node 22+. Подробнее — `PRODUCT.md` → Stack и `docs/v1/PLAN.md` §2.
 
 ## Development Commands
 
-_Будут добавлены после настройки проекта (build, test, lint, format, dev server)._
+Первый запуск: `cp .env.example .env && pnpm i && docker compose up -d && pnpm db:migrate && pnpm dev` (кабинет — http://localhost:3000 → `/uz`).
+
+- `pnpm dev` — web (порт 3000) + worker параллельно.
+- `pnpm build` — сборка web и worker.
+- `pnpm lint` (`lint:fix`), `pnpm format` (`format:check`), `pnpm typecheck`.
+- `pnpm test` — unit + интеграционные; `pnpm test:unit`, `pnpm test:int`. Один файл: `pnpm vitest run packages/core/src/money.test.ts`; один тест: добавить `-t "<название>"`.
+- `pnpm test:e2e` — Playwright: пересоздаёт и засеивает **тестовую** БД, поднимает dev-сервер на 3100 с ней, коды входа читает из `test-results/e2e-outbox.jsonl`; проекты `phone-360` и `desktop`. Браузер: `pnpm exec playwright install chromium`.
+- `pnpm db:migrate` — применить миграции; `pnpm db:migrate:dev --name <имя>` — создать миграцию; `pnpm db:seed`; `pnpm db:studio`.
+- Перед PR: `lint`, `format:check`, `typecheck`, `test` — CI (`.github/workflows/ci.yml`) гоняет то же самое + `build`.
+
+## High-Level Architecture
+
+```
+apps/web       Next.js: кабинет сотрудников (app/[locale]/…) + /api/v1 (будущее приложение)
+apps/worker    Node-процесс: pg-boss (очереди и cron), позже Telegram-бот (этап 6)
+packages/core  вся бизнес-логика и правила — UI и бот только вызывают её
+packages/db    Prisma: схема, миграции, клиент (`prisma`, тип `Db` = клиент или транзакция), сид
+packages/i18n  словари uz/ru + `translate()` для кода вне React
+packages/ui    дизайн-система: токены цветов (tokens.css), Tailwind theme (theme.css), компоненты
+```
+
+- **Пакеты отдают TypeScript-исходники** (без сборки): web транспилирует их через `transpilePackages`, worker бандлит через tsup. Импорты между пакетами — `@gl/core`, `@gl/db`, `@gl/i18n`, `@gl/ui`; внутри web — алиас `@/*`.
+- **Клиентские компоненты не импортируют корень `@gl/core`** (он тянет Prisma). Для браузера есть подпути: `@gl/core/time`, `@gl/core/money`, `@gl/core/result`.
+- **Ошибки**: доменные функции возвращают `Result<T>` (`ok`/`err`) с кодом из `errorCodes`; текст — `errors.<CODE>` в словарях (тест проверяет, что у каждого кода есть перевод на обоих языках). `DomainError` — для мест, где Result вернуть нельзя.
+- **Деньги** — `bigint` в целых сумах (`parseSum`, `formatSum`, `percentOf` с округлением half-up). **Время** — хранится в UTC; границы дня/месяца, формат `ДД.ММ.ГГГГ` и день недели — по Asia/Tashkent (`dayRange`, `monthRange`, `formatDate`…). Не использовать `Date#getDate()` и т. п. для школьных дат.
+- **Аудит**: `writeAudit(db, actor, entry)` в той же транзакции, что и изменение. Таблица `AuditLog` только на добавление (триггер в БД запрещает UPDATE/DELETE).
+- **Настройки**: каждая настройка объявляется через `defineSetting({ key, schema, defaultValue, scope })`; в БД хранятся только отличия от значения по умолчанию. Чтение: значение филиала → глобальное → по умолчанию. В web — `getSettings()` (`apps/web/src/lib/settings.ts`, кеш на запрос); запись — `updateSetting()` (валидирует и пишет аудит). Уникальность `(key, branchId)` с `NULLS NOT DISTINCT` — вручную в миграции.
+- **i18n**: все URL с префиксом `/uz` или `/ru` (middleware next-intl). Ключи типизированы (`apps/web/src/global.d.ts`). ESLint `i18next/no-literal-string` запрещает текст в JSX и в `aria-label`/`title`/`alt`/`placeholder`/`label` — в `apps/web` и `packages/ui`. Компоненты `packages/ui` получают все тексты пропсами.
+- **Тема и цвета**: цвета только токенами (`bg-surface`, `text-fg-muted`, `bg-primary-solid`, …); стандартная палитра Tailwind отключена. Тёмная тема — `<html data-theme="dark">`; выбор (светлая/тёмная/системная) хранится в localStorage, скрипт в `<head>` применяет его до первой отрисовки.
+- **Шрифты**: Sora — заголовки (`font-head`), Manrope — текст. У Sora нет кириллицы — русские заголовки автоматически берут глифы Manrope.
+- **Каркас кабинета**: `apps/web/src/components/shell/` — боковое меню (≥1024 px), выезжающее меню на телефоне (`<dialog>`), верхняя панель (язык, профиль с выбором темы). Меню статическое (`nav-items.ts`) — на этапе 1 строится из прав.
+- **Доступ (этап 1)**: права — реестр `packages/core/src/access/permissions.ts` (`модуль.ресурс.действие`), роли — `roles.ts`; сид синхронизирует их в БД (`syncAccessModel`). `loadActor()` собирает права пользователя по назначениям ролей и филиалам. Проверка одной записи — `can(actor, право, { branchId, classId, studentId, ownerUserId })`, списки — `scopeWhere(actor, право, { branch: branchId, … })`.
+- **Сервисы с данными филиалов** принимают `ServiceContext` (`createServiceContext`): актор обязателен, а `ctx.db` — клиент с защитой (`access/guard.ts`). Список или подсчёт модели из `branchOwnedModels` без условия на филиал бросает `UnscopedQueryError`. **Каждую новую модель филиала добавляй в `branchOwnedModels`**, а новое право — в реестр (матрица тестов подхватит его сама).
+- **Области ASSIGNED / HOMEROOM / CHILDREN / SELF** берут данные из `ScopeRelationsProvider` (`access/actor.ts`); в этапе 1 это заглушка с пустыми наборами — этапы 2 и 4 подключают реальные классы, учеников и назначения.
+- **Web-авторизация**: `apps/web/src/lib/auth.ts` — `getAuth()` (сессия + актор + контекст на запрос), `requireAuth()`, `requirePermission()` (без права — 404). Middleware только перенаправляет без cookie; настоящая проверка — на сервере в каждой странице и в каждом действии. Пункты меню — `components/shell/nav-items.ts`, у каждого своё право.
+- **Уведомления**: `NotificationDispatcher` (`packages/core/src/notifications`). Коды (`critical: true`) уходят во все подтверждённые каналы, включая SMS. Сейчас провайдеры — заглушки `ConsoleSms`/`ConsoleEmail` (лог + `DEV_OUTBOX_FILE`); реальные подключаются в `apps/web/src/lib/notify.ts` на этапе 6.
+- **Сид** — `packages/core/src/seed` (`pnpm db:seed`): права, роли, два филиала и демо-пользователи (не в production). Пароль демо-сотрудников — `demo12345`, телефоны `+99800000000N`.
+- **Тесты**: `*.test.ts` — unit; `*.int.test.ts` — интеграционные, работают с `DATABASE_URL_TEST` (миграции применяются автоматически в `test/integration-setup.ts`, файлы выполняются последовательно).
 
 ## Key Files and Directories
 
@@ -57,5 +94,7 @@ _Будут добавлены после настройки проекта (bui
 - `docs/BRAND.md` — цвета (светлая/тёмная темы), шрифты, логотип. Цвета только через токены.
 - `docs/v1/PLAN.md` — план v1: архитектура, модель данных, этапы, решения.
 - `docs/v1/prompts/` — промты для реализации v1 по этапам (выполнять по порядку).
-- `src/images/` — изображения.
+- `src/images/` — изображения (логотип для web скопирован в `apps/web/public/brand/`).
+- `.env.example` — все переменные окружения; `docker-compose.yml` — PostgreSQL для разработки (+ тестовая БД).
+- `packages/db/prisma/` — схема, миграции, сид.
 - `.claude/skills/`, `.agents/skills/` — скиллы (GSAP, интерфейсы).

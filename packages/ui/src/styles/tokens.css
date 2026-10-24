@@ -1,0 +1,125 @@
+/*
+ * Genius Land design tokens. Source of every colour: docs/BRAND.md.
+ * This file is the ONLY place where colour values are written; components use tokens
+ * (Tailwind utilities such as bg-surface, text-fg-muted, border-border, bg-primary-solid).
+ *
+ * Theme selection: <html data-theme="light|dark"> (light when the attribute is missing).
+ *
+ * Dark-theme tokens that BRAND.md does not list (hover/active, sunk surface, soft status
+ * backgrounds…) are derived with color-mix() from the listed dark colours — no new colours.
+ */
+
+:root {
+  color-scheme: light;
+
+  --gl-bg: #f2f7f5;
+  --gl-surface: #ffffff;
+  --gl-surface-2: #f5f9f7;
+  --gl-surface-3: #e9eeec;
+  --gl-surface-sunk: #edf2f0;
+  --gl-border: #dbe1de;
+  --gl-border-soft: #eaefed;
+  --gl-border-strong: #7e8582;
+  --gl-fg: #19201d;
+  --gl-fg-muted: #525855;
+
+  --gl-primary: #0ea17b;
+  --gl-primary-solid: #0b6b51;
+  --gl-primary-hover: #005a43;
+  --gl-primary-active: #004b37;
+  --gl-primary-deep: #003f2e;
+  --gl-primary-soft: #e5f8f0;
+  --gl-primary-soft-fg: #005b44;
+  --gl-primary-border: #c2e5d6;
+  /* Text on primary-solid / danger-solid fills. */
+  --gl-on-solid: #ffffff;
+  --gl-focus: #0ea17b;
+
+  --gl-success: #0ea17b;
+  --gl-success-soft: #e5f8f0;
+  --gl-success-fg: #005b44;
+  --gl-warning: #f59835;
+  --gl-warning-soft: #fef0e4;
+  --gl-warning-fg: #713f00;
+  --gl-danger: #d93829;
+  --gl-danger-soft: #ffeeeb;
+  --gl-danger-fg: #940300;
+  --gl-danger-solid: #ac0601;
+  --gl-info: #1295c7;
+  --gl-info-soft: #e5f6ff;
+  --gl-info-fg: #005474;
+  --gl-info-solid: #006387;
+
+  --gl-overlay: rgba(12, 24, 20, 0.44);
+
+  --gl-chart-1: #0ea17b;
+  --gl-chart-2: #009ca3;
+  --gl-chart-3: #1295c7;
+  --gl-chart-4: #6287d5;
+  --gl-chart-5: #d97e04;
+  --gl-chart-6: #d93829;
+
+  /* Elevation: layered transparent shadows instead of borders that only fake depth. */
+  --gl-shadow-sm: 0 0 0 1px rgb(0 0 0 / 0.05), 0 1px 2px rgb(0 0 0 / 0.04);
+  --gl-shadow-md:
+    0 0 0 1px rgb(0 0 0 / 0.05), 0 2px 4px rgb(0 0 0 / 0.04), 0 8px 16px -4px rgb(0 0 0 / 0.06);
+  --gl-shadow-lg:
+    0 0 0 1px rgb(0 0 0 / 0.06), 0 4px 8px rgb(0 0 0 / 0.04), 0 24px 48px -12px rgb(0 0 0 / 0.18);
+  /* Image outline: pure black / pure white at 10 %, never a tinted neutral. */
+  --gl-image-outline: oklch(0 0 0 / 0.1);
+}
+
+/*
+ * Dark tokens. "System" is resolved to light/dark by a tiny inline script before first paint
+ * (see ThemeScript), so the dark palette is written once, under the attribute.
+ */
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --gl-bg: #111614;
+  --gl-surface: #1d2320;
+  --gl-surface-2: #272d2b;
+  --gl-surface-3: #323836;
+  --gl-surface-sunk: color-mix(in oklab, #111614 60%, #1d2320);
+  --gl-border: #2e3633;
+  --gl-border-soft: color-mix(in oklab, #2e3633 60%, #1d2320);
+  --gl-border-strong: color-mix(in oklab, #b8c0bc 45%, #2e3633);
+  --gl-fg: #e7efeb;
+  --gl-fg-muted: #b8c0bc;
+
+  --gl-primary: #57d1a8;
+  --gl-primary-solid: #57d1a8;
+  --gl-primary-hover: color-mix(in oklab, #57d1a8 85%, #e7efeb);
+  --gl-primary-active: color-mix(in oklab, #57d1a8 85%, #111614);
+  --gl-primary-deep: #003627;
+  --gl-primary-soft: #113529;
+  --gl-primary-soft-fg: #57d1a8;
+  --gl-primary-border: color-mix(in oklab, #57d1a8 35%, #1d2320);
+  --gl-on-solid: #0b1512;
+  --gl-focus: #57d1a8;
+
+  --gl-success: #57d1a8;
+  --gl-success-soft: #113529;
+  --gl-success-fg: #57d1a8;
+  --gl-warning: #f3a357;
+  --gl-warning-soft: color-mix(in oklab, #f3a357 16%, #1d2320);
+  --gl-warning-fg: #f3a357;
+  --gl-danger: #ff9686;
+  --gl-danger-soft: color-mix(in oklab, #ff9686 16%, #1d2320);
+  --gl-danger-fg: #ff9686;
+  --gl-danger-solid: #ff9686;
+  --gl-info: #56c5f9;
+  --gl-info-soft: color-mix(in oklab, #56c5f9 16%, #1d2320);
+  --gl-info-fg: #56c5f9;
+  --gl-info-solid: #56c5f9;
+
+  --gl-overlay: color-mix(in oklab, #0b1512 72%, transparent);
+
+  --gl-shadow-sm: 0 0 0 1px rgb(255 255 255 / 0.06), 0 1px 2px rgb(0 0 0 / 0.3);
+  --gl-shadow-md:
+    0 0 0 1px rgb(255 255 255 / 0.06), 0 2px 4px rgb(0 0 0 / 0.3), 0 8px 16px -4px rgb(0 0 0 / 0.4);
+  --gl-shadow-lg:
+    0 0 0 1px rgb(255 255 255 / 0.08), 0 4px 8px rgb(0 0 0 / 0.3),
+    0 24px 48px -12px rgb(0 0 0 / 0.6);
+  --gl-image-outline: oklch(1 0 0 / 0.1);
+}
