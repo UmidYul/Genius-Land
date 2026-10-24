@@ -17,7 +17,7 @@ web
 
 ## Stack
 
-Delegated: **Next.js (App Router) + TypeScript, PostgreSQL via Prisma, and next-intl for Uzbek/Russian.** Why: one codebase serves the staff web app now and can expose an API for the parent/student app and the Telegram bot later. Role-based access and server-rendered pages suit a data-heavy internal tool. PostgreSQL fits the relational shape of the data (branches, students, classes, groups, subjects, grades, payments). Hosting target is undecided.
+Delegated: **Next.js (App Router) + TypeScript, PostgreSQL via Prisma, and next-intl for Uzbek/Russian.** Why: one codebase serves the staff web app now and can expose an API for the parent/student app and the Telegram bot later. Role-based access and server-rendered pages suit a data-heavy internal tool. PostgreSQL fits the relational shape of the data (branches, students, classes, groups, subjects, grades, payments). Hosting: temporarily the school PC with Cloudflare Tunnel (`docs/LAUNCH-PC.md`), then a VPS.
 
 ## School
 
@@ -113,7 +113,7 @@ Open decisions (do not assume — ask Umid):
 - Whether attendance is marked per lesson or per day.
 - Fee structure (monthly vs. other periods, discounts, siblings), входят ли питание/автобус/поездки в плату, payment methods, and any integrations (e.g. Click, Payme).
 - Homework, announcements, and messaging: not in v1 scope unless added.
-- SMS provider, hosting/deployment target.
+- SMS provider; VPS provider (temporary hosting decided: school PC).
 - Parent/student app platform and timeline.
 
 ## Brand Commitments
